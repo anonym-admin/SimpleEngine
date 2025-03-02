@@ -39,6 +39,17 @@ interface ILineObject : public IUnknown
 	virtual ULONG STDMETHODCALLTYPE Release(void) = 0;
 };
 
+interface ILandScape : public IUnknown
+{
+	virtual void* CreateDynamicMeshBuffers(MeshData_t* pMeshData, AkU32 uMeshDataNum) = 0;
+	virtual AkBool UpdateMaterialBuffers(const Vector3* pAlbedoFactor, AkF32 fMetallicFactor, AkF32 fRoughnessFactor, const Vector3* pEmisiionFactor) = 0;
+	virtual void EnableWireFrame() = 0;
+	virtual void DisableWireFrame() = 0;
+	virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject) = 0;
+	virtual ULONG STDMETHODCALLTYPE AddRef(void) = 0;
+	virtual ULONG STDMETHODCALLTYPE Release(void) = 0;
+};
+
 interface IRenderer : public IUnknown
 {
 	virtual AkBool Initialize(HWND hWnd, AkBool bEnableDebugLayer, AkBool bEnableGBV) = 0;
@@ -53,18 +64,22 @@ interface IRenderer : public IUnknown
 	virtual ISpriteObject* CreateSpriteObjectWidthTex(const wchar_t* wcTexFilename, AkI32 iPosX, AkI32 iPosY, AkI32 iWidth, AkI32 iHeight) = 0;
 	virtual ISkyboxObject* CreateSkyboxObject() = 0;
 	virtual ILineObject* CreateLineObject() = 0;
+	virtual ILandScape* CreateLandScapeObject() = 0;
 	virtual void* CreateTextureFromFile(const wchar_t* wcFilename, AkBool bUseSRGB) = 0;
 	virtual void* CreateCubeMapTexture(const wchar_t* wcFilename) = 0;
 	virtual void* CreateDynamicTexture(AkU32 uTexWidth, AkU32 uTexHeight) = 0;
 	virtual void* CreateFontObject(const wchar_t* wcFontFamilyName, AkF32 fFontSize) = 0;
+	virtual void* CreateDynamicVertices(AkU32 uSizePerVertex, AkU32 uVertexNum) = 0;
 	virtual void BindIBLTexture(void* pIrradianceTexHandle, void* pSpecularTexHandle, void* pBrdfTexHandle) = 0;
 	virtual void BindImGui(void** ppImGuiCtx) = 0;
 	virtual void UnBindImGui() = 0;
 	virtual AkBool WriteTextToBitmap(AkU8* pDestImage, AkU32 uDestWidth, AkU32 uDestHeight, AkU32 uDestPitch, AkI32* pWidth, AkI32* pHeight, void* pFontHandle, const wchar_t* wcText, AkU32 uTextLength, FONT_COLOR_TYPE eFontColor = FONT_COLOR_TYPE::FONT_COLOR_TYPE_WHITE) = 0;
 	virtual AkBool UpdateWindowSize(AkU32 uScreenWidth, AkU32 uScreenHeight) = 0;
 	virtual void UpdateTextureWidthImage(void* pTexHandle, const AkU8* pSrcImage, AkU32 uSrcWidth, AkU32 uSrcHeight) = 0;
+	virtual void UpdateDynamicVertices(void* pDVHandle, const MeshData_t* pMeshData, AkU32 uMeshDataNum) = 0;
 	virtual void DestroyTexture(void* pTexHandle) = 0;
 	virtual void DestroyFontObject(void* pFontHandle) = 0;
+	virtual void DestroyDynamicVertex(void* pDVHandle) = 0;
 	virtual void RenderBasicMeshObject(IMeshObject* pMeshObj, const Matrix* pWorldMat) = 0;
 	virtual void RenderNormalOfBasicMeshObject(IMeshObject* pMeshObj, const Matrix* pWorldMat) = 0;
 	virtual void RenderShadowOfBasicMeshObject(IMeshObject* pMeshObj, const Matrix* pWorldMat) = 0;
@@ -75,6 +90,7 @@ interface IRenderer : public IUnknown
 	virtual void RenderSprite(void* pSpriteObjHandle, AkI32 iPosX, AkI32 iPosY, AkF32 fScaleX, AkF32 fScaleY, AkF32 fZ) = 0;
 	virtual void RenderSkybox(ISkyboxObject* pSkyboxObj, const Matrix* pWorldMat, void* pEnvHDR, void* pDiffuseHDR, void* pSpecularHDR) = 0;
 	virtual void RenderLineObject(ILineObject* pLineObj, const Matrix* pWorldMat) = 0;
+	virtual void RenderLandScapeObject(ILandScape* pLandScapeObj, const Matrix* pWorldMat) = 0;
 	virtual void SetCameraPosition(AkF32 fX, AkF32 fY, AkF32 fZ) = 0;
 	virtual void RotateXCamera(AkF32 fRadian) = 0;
 	virtual void RotateYCamera(AkF32 fRadian) = 0;

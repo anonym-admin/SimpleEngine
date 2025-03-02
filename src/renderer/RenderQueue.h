@@ -7,6 +7,7 @@ enum class RENDER_ITEM_TYPE
 	RENDER_ITEM_TYPE_SKYBOX_OBJ,
 	RENDER_ITEM_TYPE_SPRITE_OBJ,
 	RENDER_ITEM_TYPE_LINE_OBJ,
+	RENDER_ITEM_TYPE_LANDSCAPE_OBJ,
 };
 
 struct RenderMeshObjParam_t
@@ -43,6 +44,12 @@ struct RenderSpriteObjParam_t
 	const Vector3* pFontColor = nullptr;
 };
 
+struct RenderLandScapeParam_t
+{
+	const Matrix* pWorld = nullptr;
+	AkBool bDrawNormal = AK_FALSE;
+};
+
 struct RenderLineObjParam_t
 {
 	const Matrix* _pWorld = nullptr;
@@ -59,6 +66,7 @@ struct RenderItem_t
 		RenderSkyboxObjParam_t tSkyboxObjParam;
 		RenderSpriteObjParam_t tSpriteObjParam;
 		RenderLineObjParam_t tLineObjParam;
+		RenderLandScapeParam_t tLandScapeParam;
 	};
 };
 

@@ -7,6 +7,7 @@
 #include "SkyboxObject.h"
 #include "LineObject.h"
 #include "D3DUtils.h"
+#include "LandScapeObject.h"
 
 /*
 ==============
@@ -152,6 +153,18 @@ DWORD FRenderQueue::Process(DWORD uThreadIndex, FCommandListPool* pCmdListPool, 
 			{
 				FLineObject* pLineObj = (FLineObject*)pItem->pObjHandle;
 				pLineObj->Draw(uThreadIndex, pCmdList, pItem->tLineObjParam._pWorld);
+			}
+			break;
+			case RENDER_ITEM_TYPE::RENDER_ITEM_TYPE_LANDSCAPE_OBJ:
+			{
+				FLandScapeObject* pLandScapeObj = (FLandScapeObject*)pItem->pObjHandle;
+				pLandScapeObj->Draw(uThreadIndex, pCmdList, pItem->tMeshObjParam.pWorld);
+
+				// Draw normal.
+				if (pItem->tMeshObjParam.bDrawNormal)
+				{
+					pLandScapeObj->DrawNormal(uThreadIndex, pCmdList, pItem->tMeshObjParam.pWorld);
+				}
 			}
 			break;
 			default:

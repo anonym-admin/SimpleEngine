@@ -334,6 +334,35 @@ AkBool FResourceManager::CreateTextureWithUploadBuffer(ID3D12Resource** ppTexRes
 	return AK_TRUE;
 }
 
+AkBool FResourceManager::CreateDynamicVertices(AkU32 uSizePerVertex, AkU32 uVertexNum, D3D12_VERTEX_BUFFER_VIEW* pOutVertexBufferView, ID3D12Resource** ppOutUploadBuffer)
+{
+	D3D12_VERTEX_BUFFER_VIEW tVertexBufferView = {};
+	ID3D12Resource* pUploadBuffer = nullptr;
+	AkU32 uVertexBufferSize = uSizePerVertex * uVertexNum;
+
+	if (FAILED(_pDevice->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(uSizePerVertex * uVertexNum),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&pUploadBuffer))))
+	{
+		__debugbreak();
+		return AK_FALSE;
+	}
+
+	// Initialize the vertex buffer view.
+	tVertexBufferView.BufferLocation = pUploadBuffer->GetGPUVirtualAddress();
+	tVertexBufferView.StrideInBytes = uSizePerVertex;
+	tVertexBufferView.SizeInBytes = uVertexBufferSize;
+
+	*pOutVertexBufferView = tVertexBufferView;
+	*ppOutUploadBuffer = pUploadBuffer;
+
+	return AK_TRUE;
+}
+
 void FResourceManager::CleanUp()
 {
 	DestroyFence();

@@ -18,6 +18,7 @@ public:
 	AkBool CreateTextureFromFile(ID3D12Resource** ppTexResource, D3D12_RESOURCE_DESC* pResourceDesc, const wchar_t* wcFilename, AkBool bUseSRGB);
 	AkBool CreateCubeMapTexture(ID3D12Resource** ppTexResource, D3D12_RESOURCE_DESC* pResourceDesc, const wchar_t* wcFilename);
 	AkBool CreateTextureWithUploadBuffer(ID3D12Resource** ppTexResource, ID3D12Resource** ppUploadBuffer, AkU32 uWidth, AkU32 uHeight, DXGI_FORMAT tFormat);
+	AkBool CreateDynamicVertices(AkU32 uSizePerVertex, AkU32 uVertexNum, D3D12_VERTEX_BUFFER_VIEW* pOutVertexBufferView, ID3D12Resource** ppOutUploadBuffer);
 
 private:
 	void CleanUp();

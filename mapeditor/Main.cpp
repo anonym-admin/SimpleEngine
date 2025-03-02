@@ -41,7 +41,7 @@ Vector3 g_vInitCamDir = Vector3(0.0f, 0.0f, 1.0f);
 Vector3 g_vCurCamDir;
 Vector3 g_vCurCamRight;
 bool g_bKeyDown[256];
-float g_fCamSpeed = 1.0f;
+float g_fCamSpeed = 50.0f;
 float g_fNdcX;
 float g_fNdcY;
 int g_iMouseX;
@@ -226,6 +226,7 @@ void Update(const float fDT)
 	UpdateCamera(fDT);
 
 	g_landScapeEditor->Update(fDT);
+	g_landScapeEditor->UpdateGui();
 }
 
 void UpdateMouse(int iMouseX, int iMouseY)

@@ -109,6 +109,21 @@ struct TextureHandle_t
 	List_t tLink = {};
 };
 
+struct FontHandle_t
+{
+	IDWriteTextFormat* pTextFormat;
+	float fFontSize;
+	WCHAR wchFontFamilyName[512];
+};
+
+struct DynamicVertexHandle_t
+{
+	ID3D12Resource* pUploadBuffer = nullptr;
+	AkU32 uSizePerVertex = 0;
+	AkU32 uVertexNum = 0;
+	AkBool bUpdated = AK_FALSE;
+};
+
 struct Mesh_t
 {
 	ID3D12Resource* pVB = nullptr;
@@ -123,11 +138,4 @@ struct Mesh_t
 	TextureHandle_t* pMetallicTextureHandle = nullptr;
 	TextureHandle_t* pRoughnessTextureHandle = nullptr;
 	TextureHandle_t* pAoTextureHandle = nullptr;
-};
-
-struct FontHandle_t
-{
-	IDWriteTextFormat* pTextFormat;
-	float fFontSize;
-	WCHAR wchFontFamilyName[512];
 };

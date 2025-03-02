@@ -19,10 +19,31 @@
     <Filter Include="Interface">
       <UniqueIdentifier>{99f7d379-e623-44ca-9891-77c5649e898a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Object">
+      <UniqueIdentifier>{bba38b94-2ff2-4fb9-a56e-b88290483ab4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{064815f2-8737-489f-ad75-39b5c3d5607c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Renderer.def" />
+    <None Include="..\..\shader\Common.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\..\shader\DiskSample.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\..\shader\GlobalConsts.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\..\shader\IBLTexture.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="..\..\shader\SamplerState.hlsli">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Renderer.cpp">
@@ -37,19 +58,7 @@
     <ClCompile Include="ResourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SkinnedMeshObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SkyboxObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TextureManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BasicMeshObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CommandListPool.cpp">
@@ -74,9 +83,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FontManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LineObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
@@ -106,6 +112,24 @@
     <ClCompile Include="..\..\utils\UtilFunc.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="BasicMeshObject.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedMeshObject.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyboxObject.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteObject.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="LineObject.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="LandScapeObject.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Renderer.h">
@@ -123,19 +147,7 @@
     <ClInclude Include="ResourceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SkinnedMeshObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SkyboxObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TextureManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BasicMeshObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CommandListPool.h">
@@ -157,9 +169,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FontManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LineObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
@@ -192,5 +201,49 @@
     <ClInclude Include="..\..\interface\IRenderer.h">
       <Filter>Interface</Filter>
     </ClInclude>
+    <ClInclude Include="BasicMeshObject.h">
+      <Filter>Source Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedMeshObject.h">
+      <Filter>Source Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyboxObject.h">
+      <Filter>Source Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteObject.h">
+      <Filter>Source Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="LineObject.h">
+      <Filter>Source Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="LandScapeObject.h">
+      <Filter>Source Files\Object</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\shader\LandScapeEditorShader.hlsl">
+      <Filter>Shader</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\shader\BasicShader.hlsl">
+      <Filter>Shader</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\shader\DepthOnlyShader.hlsl">
+      <Filter>Shader</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\shader\LineShader.hlsl">
+      <Filter>Shader</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\shader\NormalShader.hlsl">
+      <Filter>Shader</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\shader\PostProcessShader.hlsl">
+      <Filter>Shader</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\shader\SkyboxShader.hlsl">
+      <Filter>Shader</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\shader\SpriteShader.hlsl">
+      <Filter>Shader</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

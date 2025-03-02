@@ -20,6 +20,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\shader\Common.hlsli" />
+    <None Include="..\..\shader\DiskSample.hlsli" />
+    <None Include="..\..\shader\GlobalConsts.hlsli" />
+    <None Include="..\..\shader\IBLTexture.hlsli" />
+    <None Include="..\..\shader\SamplerState.hlsli" />
     <None Include="packages.config" />
     <None Include="Renderer.def" />
   </ItemGroup>
@@ -40,6 +45,7 @@
     <ClCompile Include="DescriptorPool.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="FontManager.cpp" />
+    <ClCompile Include="LandScapeObject.cpp" />
     <ClCompile Include="LineObject.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -74,6 +80,7 @@
     <ClInclude Include="DescriptorAllocator.h" />
     <ClInclude Include="DescriptorPool.h" />
     <ClInclude Include="FontManager.h" />
+    <ClInclude Include="LandScapeObject.h" />
     <ClInclude Include="LineObject.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PostProcess.h" />
@@ -86,6 +93,34 @@
     <ClInclude Include="SkyboxObject.h" />
     <ClInclude Include="SpriteObject.h" />
     <ClInclude Include="TextureManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\shader\BasicShader.hlsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\..\shader\DepthOnlyShader.hlsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\..\shader\LandScapeEditorShader.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </CustomBuild>
+    <CustomBuild Include="..\..\shader\LineShader.hlsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\..\shader\NormalShader.hlsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\..\shader\PostProcessShader.hlsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\..\shader\SkyboxShader.hlsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <CustomBuild Include="..\..\shader\SpriteShader.hlsl">
+      <FileType>Document</FileType>
+    </CustomBuild>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

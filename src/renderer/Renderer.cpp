@@ -16,6 +16,7 @@
 #include "SkyboxObject.h"
 #include "LineObject.h"
 #include "PostProcess.h"
+#include "LandScapeObject.h"
 
 // For ImGui;
 extern ImGuiContext* GImGui;
@@ -493,7 +494,6 @@ ISkyboxObject* FRenderer::CreateSkyboxObject()
 {
 	FSkyboxObject* pSkyboxObj = new FSkyboxObject;
 	pSkyboxObj->Initialize(this);
-
 	return pSkyboxObj;
 }
 
@@ -501,8 +501,14 @@ ILineObject* FRenderer::CreateLineObject()
 {
 	FLineObject* pLineObj = new FLineObject;
 	pLineObj->Initialize(this);
-
 	return pLineObj;
+}
+
+ILandScape* FRenderer::CreateLandScapeObject()
+{
+	FLandScapeObject* pLandScapeObj = new FLandScapeObject;
+	pLandScapeObj->Initialize(this);
+	return pLandScapeObj;
 }
 
 void* FRenderer::CreateTextureFromFile(const wchar_t* wcFilename, AkBool bUseSRGB)
@@ -548,6 +554,25 @@ void* FRenderer::CreateFontObject(const wchar_t* wcFontFamilyName, AkF32 fFontSi
 	return pFontHandle;
 }
 
+void* FRenderer::CreateDynamicVertices(AkU32 uSizePerVertex, AkU32 uVertexNum)
+{
+	ID3D12Resource* pUploadBuffer = nullptr;
+	DynamicVertexHandle_t* pDVHandle = nullptr;
+	//if (_pResourceManager->CreateDynamicVertices(uSizePerVertex, uVertexNum, &pUploadBuffer))
+	//{
+	//	pDVHandle = new DynamicVertexHandle_t;
+	//	pDVHandle->pUploadBuffer = pUploadBuffer;
+	//	pDVHandle->uSizePerVertex = uSizePerVertex;
+	//	pDVHandle->uVertexNum = uVertexNum;
+	//}
+	//else
+	//{
+	//	__debugbreak();
+	//	return pDVHandle;
+	//}
+	return pDVHandle;
+}
+
 AkBool FRenderer::WriteTextToBitmap(AkU8* pDestImage, AkU32 uDestWidth, AkU32 uDestHeight, AkU32 uDestPitch, AkI32* pWidth, AkI32* pHeight, void* pFontHandle, const wchar_t* wcText, AkU32 uTextLength, FONT_COLOR_TYPE eFontColor)
 {
 	AkBool bResult = _pFontManager->WriteTextToBitmap(pDestImage, uDestWidth, uDestHeight, uDestPitch, pWidth, pHeight, reinterpret_cast<FontHandle_t*>(pFontHandle), wcText, uTextLength, eFontColor);
@@ -572,9 +597,9 @@ void FRenderer::UpdateTextureWidthImage(void* pTexHandle, const AkU8* pSrcImage,
 	}
 
 	D3D12_PLACED_SUBRESOURCE_FOOTPRINT tFootprint;
-	AkU32	uRows = 0;
-	AkU64	u64RowSize = 0;
-	AkU64	u64TotalBytes = 0;
+	AkU32 uRows = 0;
+	AkU64 u64RowSize = 0;
+	AkU64 u64TotalBytes = 0;
 
 	_pDevice->GetCopyableFootprints(&tDesc, 0, 1, 0, &tFootprint, &uRows, &u64RowSize, &u64TotalBytes);
 
@@ -599,6 +624,24 @@ void FRenderer::UpdateTextureWidthImage(void* pTexHandle, const AkU8* pSrcImage,
 	pTextureHandle->bUpdated = TRUE;
 }
 
+void FRenderer::UpdateDynamicVertices(void* pDVHandle, const MeshData_t* pMeshData, AkU32 uMeshDataNum)
+{
+	DynamicVertexHandle_t* pDynamicVertexHandle = (DynamicVertexHandle_t*)pDVHandle;
+	ID3D12Resource* pUploadBuffer = pDynamicVertexHandle->pUploadBuffer;
+	AkU32 uSizePerVertex = pDynamicVertexHandle->uSizePerVertex;
+	AkU32 uVertexNum = pDynamicVertexHandle->uVertexNum;
+
+	BYTE* pMappedPtr = nullptr;
+	CD3DX12_RANGE writeRange(0, 0);
+	HRESULT hr = pUploadBuffer->Map(0, &writeRange, reinterpret_cast<void**>(&pMappedPtr));
+	if (FAILED(hr))
+		__debugbreak();
+
+	memcpy(pMappedPtr, pMeshData->pVertices, uSizePerVertex * uVertexNum);
+
+	pUploadBuffer->Unmap(0, nullptr);
+}
+
 void FRenderer::DestroyTexture(void* pTexHandle)
 {
 	for (AkU32 i = 0; i < PENDING_FRAME_COUNT; i++)
@@ -612,6 +655,15 @@ void FRenderer::DestroyTexture(void* pTexHandle)
 void FRenderer::DestroyFontObject(void* pFontHandle)
 {
 	_pFontManager->DeleteFontObject(reinterpret_cast<FontHandle_t*>(pFontHandle));
+}
+
+void FRenderer::DestroyDynamicVertex(void* pDVHandle)
+{
+	// TODO
+	if (pDVHandle)
+	{
+		delete pDVHandle;
+	}
 }
 
 void FRenderer::RenderBasicMeshObject(IMeshObject* pMeshObj, const Matrix* pWorldMat)
@@ -781,6 +833,22 @@ void FRenderer::RenderLineObject(ILineObject* pLineObj, const Matrix* pWorldMat)
 	RenderItem_t tItem = {};
 	tItem.eItemType = RENDER_ITEM_TYPE::RENDER_ITEM_TYPE_LINE_OBJ;
 	tItem.pObjHandle = pLineObj;
+	tItem.tLineObjParam._pWorld = pWorldMat;
+
+	if (!_ppRenderQueue[_uCurThreadIndex]->Add(&tItem))
+	{
+		__debugbreak();
+	}
+
+	_uCurThreadIndex++;
+	_uCurThreadIndex = _uCurThreadIndex % _uRenderThreadCount;
+}
+
+void FRenderer::RenderLandScapeObject(ILandScape* pLandScapeObj, const Matrix* pWorldMat)
+{
+	RenderItem_t tItem = {};
+	tItem.eItemType = RENDER_ITEM_TYPE::RENDER_ITEM_TYPE_LANDSCAPE_OBJ;
+	tItem.pObjHandle = pLandScapeObj;
 	tItem.tLineObjParam._pWorld = pWorldMat;
 
 	if (!_ppRenderQueue[_uCurThreadIndex]->Add(&tItem))
