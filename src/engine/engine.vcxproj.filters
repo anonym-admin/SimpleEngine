@@ -18,6 +18,9 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
+    <Filter Include="Source\Editor">
+      <UniqueIdentifier>{f167d0c5-d902-496a-ba18-cb310eb85c99}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h">
@@ -59,16 +62,7 @@
     <ClInclude Include="DancerModel.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="Editor.h">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="EditorManager.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="EditorMap.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="EditorModel.h">
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="EventManager.h">
@@ -197,6 +191,15 @@
     <ClInclude Include="..\..\interface\IRenderer.h">
       <Filter>Interface</Filter>
     </ClInclude>
+    <ClInclude Include="Editor.h">
+      <Filter>Source\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorMap.h">
+      <Filter>Source\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorModel.h">
+      <Filter>Source\Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp">
@@ -238,16 +241,7 @@
     <ClCompile Include="DancerModel.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Editor.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="EditorManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="EditorMap.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="EditorModel.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="EntryPoint.cpp">
@@ -357,6 +351,15 @@
     </ClCompile>
     <ClCompile Include="..\..\common\AkMath.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorMap.cpp">
+      <Filter>Source\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorModel.cpp">
+      <Filter>Source\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor.cpp">
+      <Filter>Source\Editor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

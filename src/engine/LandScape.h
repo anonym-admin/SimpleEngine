@@ -6,6 +6,8 @@ LandScape
 ==============
 */
 
+// #define REGACY
+
 class UApplication;
 
 class ULandScape
@@ -14,8 +16,6 @@ public:
 	ULandScape();
 	~ULandScape();
 
-	AkBool Initialize(UApplication* pApp);
-	AkBool Initialize(UApplication* pApp, const wchar_t* wcModelFilename, const wchar_t* wcTextureFilename);
 	AkBool Initialize(UApplication* pApp, const wchar_t* wcRawSetUpFilename);
 	void Update(const AkF32 fDeltaTime);
 	void Render();
@@ -30,7 +30,11 @@ private:
 
 	AkBool LoadSetupFile(const wchar_t* wcRawSetUpFilename);
 	AkBool LoadRawHeightMap();
+
 	void UpdateGroupObject(GAME_OBJECT_GROUP_TYPE eType);
+
+	void ComputeNoraml();
+	void ComputeTangent();
 
 private:
 	UApplication* _pApp = nullptr;

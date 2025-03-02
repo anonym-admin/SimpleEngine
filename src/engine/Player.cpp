@@ -352,7 +352,7 @@ void UPlayer::Update(const AkF32 fDeltaTime)
 			_bFire = AK_TRUE;
 
 			// Test
-			GetApp()->GetTestSound()->Play(AK_FALSE);
+			// GetApp()->GetTestSound()->Play(AK_FALSE);
 		}
 	}
 

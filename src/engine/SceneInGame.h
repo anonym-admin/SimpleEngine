@@ -59,7 +59,7 @@ private:
 
 public:
 	// Map Obj.
-	static const AkU32 BUILDING_BOX_COUNT = 2048;
+	static const AkU32 BUILDING_BOX_COUNT = 2;
 	IMeshObject* _pBuildingMeshObj = nullptr;
 	Matrix _pRandomTransform[BUILDING_BOX_COUNT] = {};
 	Matrix _pTempRandomTransform[BUILDING_BOX_COUNT] = {};

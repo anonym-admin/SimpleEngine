@@ -544,7 +544,7 @@ void USceneInGame::Render()
 	// _pRenderer->RenderSprite(_pLocationPointSprite, _iPosX, _iPosY, 1.0f, 1.0f, 0.0f);
 
 	// Render Land scape.
-	// _pLandScape->Render();
+	_pLandScape->Render();
 
 	UAssetManager* pAssetManager = _pApp->GetAssetManager();
 

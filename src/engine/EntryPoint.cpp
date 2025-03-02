@@ -45,7 +45,7 @@ int main(int argc, const char* argv[])
 #endif
 
 	const wchar_t wcClassName[] = L"Window Application";
-	const wchar_t wcWindowName[] = L"Akatsuki Engine Prototype";
+	const wchar_t wcWindowName[] = L"Simple Engine Prototype";
 
 	WNDCLASS tWc = { };
 

@@ -25,87 +25,39 @@ ULandScape::~ULandScape()
 	CleanUp();
 }
 
-AkBool ULandScape::Initialize(UApplication* pApp)
-{
-	_pApp = pApp;
-
-	_pRenderer = pApp->GetRenderer();
-
-	// Read height map.
-	AkU8* pImage = nullptr;
-	AkU32 uWidth = 0;
-	AkU32 uHeight = 0;
-	if (ReadBitmapFile(L"../../assets/landscape/heightmap01.bmp", &pImage, &uWidth, &uHeight))
-	{
-	}
-
-	// Make grid geometry.
-	AkU32 uMeshDataNum = 0;
-	Vector2 vTexScale = Vector2(32.0f);
-	MeshData_t* pGrid = UGeometryGenerator::MakeGrid(&uMeshDataNum, 100.0f, uWidth - 1, uHeight - 1, &vTexScale);
-
-	AkU32 k = 0;
-	for (AkU32 i = 0; i < uMeshDataNum; i++)
-	{
-		for (AkU32 j = 0; j < pGrid[i].uVerticeNum; j++)
-		{
-			pGrid[i].pVertices[j].vPosition = Vector3::Transform(pGrid[i].pVertices[j].vPosition, Matrix::CreateRotationX(DirectX::XM_PIDIV2));
-			pGrid[i].pVertices[j].vPosition.y = pImage[k];
-			pGrid[i].pVertices[j].vPosition.y /= 15.0f;
-
-			k += 3;
-		}
-	}
-
-	if (pImage)
-	{
-		delete[] pImage;
-		pImage = nullptr;
-	}
-
-	// Create basic mesh obj.
-	_pMeshObj = _pRenderer->CreateBasicMeshObject();
-	wcscpy_s(pGrid->wcAlbedoTextureFilename, L"../../assets/landscape/dirt01.dds");
-	if (_pMeshObj->CreateMeshBuffers(pGrid, uMeshDataNum))
-	{
-		// _pMeshObj->EnableWireFrame();
-		UGeometryGenerator::DestroyGeometry(pGrid, uMeshDataNum);
-	}
-	else
-	{
-		__debugbreak();  
-		return AK_FALSE;
-	}
-
-	return AK_TRUE;
-}
-
-AkBool ULandScape::Initialize(UApplication* pApp, const wchar_t* wcModelFilename, const wchar_t* wcTextureFilename)
-{
-	_pApp = pApp;
-
-	_pRenderer = pApp->GetRenderer();
-
-	_pMeshObj = _pRenderer->CreateBasicMeshObject();
-
-	_pMeshData = UGeometryGenerator::ReadFromFile(pApp, &_uMeshDataNum, L"../../assets/landscape/", wcModelFilename);
-
-	for (AkU32 i = 0; i < _uMeshDataNum; i++)
-		wcscpy_s(_pMeshData[i].wcAlbedoTextureFilename, wcTextureFilename);
-
-	_pMeshObj->CreateMeshBuffers(_pMeshData, _uMeshDataNum);
-
-	_pMeshObj->EnableWireFrame();
-
-	return AK_TRUE;
-}
-
 AkBool ULandScape::Initialize(UApplication* pApp, const wchar_t* wcRawSetUpFilename)
 {
 	_pApp = pApp;
 
 	_pRenderer = pApp->GetRenderer();
 
+	AkU32 uMeshDataNum = 0;
+	Vector2 vTexScale = Vector2(1.0f);
+	MeshData_t* pGrid = UGeometryGenerator::MakeGrid(&uMeshDataNum, 1026.0f * 2, 1026 * 2 - 1, 1026 * 2 - 1, &vTexScale);
+	{
+		// Ground 형태로 Transform 적용.
+		for (AkU32 i = 0; i < uMeshDataNum; i++)
+		{
+			for (AkU32 j = 0; j < pGrid[i].uVerticeNum; j++)
+			{
+				pGrid[i].pVertices[j].vPosition = Vector3::Transform(pGrid[i].pVertices[j].vPosition, Matrix::CreateRotationX(DirectX::XM_PIDIV2));
+			}
+		}
+
+		// Mesh OBject 생성.
+		Vector3 vAlbedo = Vector3(1.0f);
+		AkF32 fMetallic = 0.0f;
+		AkF32 fRoughness = 1.0f;
+		Vector3 vEmissive = Vector3(0.0f, 0.0f, 0.0f);
+		_pMeshObj = _pRenderer->CreateBasicMeshObject();
+		_pMeshObj->CreateMeshBuffers(pGrid, uMeshDataNum);
+		_pMeshObj->EnableWireFrame();
+		_pMeshObj->UpdateMaterialBuffers(&vAlbedo, fMetallic, fRoughness, &vEmissive);
+	}
+	UGeometryGenerator::DestroyGeometry(pGrid, uMeshDataNum);
+
+	// Regacy code.
+#ifdef REGACY
 	if (!LoadSetupFile(wcRawSetUpFilename))
 	{
 		__debugbreak();
@@ -253,6 +205,8 @@ AkBool ULandScape::Initialize(UApplication* pApp, const wchar_t* wcRawSetUpFilen
 		UGeometryGenerator::DestroyGeometry(pGrid, uMeshDataNum);
 	}
 
+#endif
+
 	return AK_TRUE;
 }
 
@@ -265,7 +219,7 @@ void ULandScape::Update(const AkF32 fDeltaTime)
 			continue;
 		}
 
-		UpdateGroupObject((GAME_OBJECT_GROUP_TYPE)i);
+		// UpdateGroupObject((GAME_OBJECT_GROUP_TYPE)i);
 	}
 }
 
@@ -522,4 +476,12 @@ void ULandScape::UpdateGroupObject(GAME_OBJECT_GROUP_TYPE eType)
 
 		pCur = pCur->pNext;
 	}
+}
+
+void ULandScape::ComputeNoraml()
+{
+}
+
+void ULandScape::ComputeTangent()
+{
 }

@@ -88,6 +88,8 @@ interface IRenderer : public IUnknown
 	virtual Vector3 GetWorldNearPosition(AkF32 fNdcX, AkF32 fNdcY) = 0;
 	virtual Vector3 GetWorldFarPosition(AkF32 fNdcX, AkF32 fNdcY) = 0;
 	virtual void GetViewPorjMatrix(Matrix* pViewMat, Matrix* pProjMat) = 0;
+	virtual AkBool MousePickingToTriangle(Vector3* pV0, Vector3* pV1, Vector3* pV2, AkF32 fNdcX, AkF32 fNdcY, Vector3* pHitPos, AkF32* pHitDist, AkF32* pRatio) = 0;
+	virtual AkBool MousePickingToSqaure(Vector3* pV0, Vector3* pV1, Vector3* pV2, Vector3* pV3, AkF32 fNdcX, AkF32 fNdcY, Vector3* pHitPos, AkF32* pHitDist, AkF32* pRatio) = 0;
 	virtual AkBool MousePickingToPlane(DirectX::SimpleMath::Plane* pPlane, AkF32 fNdcX, AkF32 fNdcY, Vector3* pHitPos, AkF32* pHitDist, AkF32* pRatio) = 0;
 	virtual AkBool MousePickingToSphere(DirectX::BoundingSphere* pSphere, AkF32 fNdcX, AkF32 fNdcY, Vector3* pHitPos, AkF32* pHitDist, AkF32* pRatio) = 0;
 	virtual AkBool MousePickingToBox(DirectX::BoundingBox* pBox, AkF32 fNdcX, AkF32 fNdcY, Vector3* pHitPos, AkF32* pHitDist, AkF32* pRatio) = 0;

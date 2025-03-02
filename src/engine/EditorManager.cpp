@@ -82,7 +82,7 @@ UEditor* UEditorManager::CreateEditor(EDITOR_TYPE eEditorType)
 		pEditor = new UEditorModel;
 		break;
 	case EDITOR_TYPE::EDITOR_TYPE_MAP:
-		pEditor = new UEditorMap;
+		pEditor = new UMapEditor;
 		break;
 	}
 

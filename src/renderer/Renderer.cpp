@@ -912,6 +912,43 @@ void FRenderer::SetIBLStrength(AkF32 fIBLStrength)
 	_fIBLStrength = fIBLStrength;
 }
 
+AkBool FRenderer::MousePickingToTriangle(Vector3* pV0, Vector3* pV1, Vector3* pV2, AkF32 fNdcX, AkF32 fNdcY, Vector3* pHitPos, AkF32* pHitDist, AkF32* pRatio)
+{
+	DirectX::SimpleMath::Ray tRay = {};
+	AkF32 fRayLength = 0.0f;
+	CalculateMousePickingRayCast(fNdcX, fNdcY, &tRay, &fRayLength);
+
+	AkF32 fHitDist = 0.0f;
+	if (tRay.Intersects(*pV0, *pV1, *pV2, fHitDist))
+	{
+		*pHitPos = tRay.position + fHitDist * tRay.direction;
+		*pHitDist = fHitDist;
+		*pRatio = fHitDist / fRayLength;
+
+		return AK_TRUE;
+	}
+
+	return AK_FALSE;
+}
+
+AkBool FRenderer::MousePickingToSqaure(Vector3* pV0, Vector3* pV1, Vector3* pV2, Vector3* pV3, AkF32 fNdcX, AkF32 fNdcY, Vector3* pHitPos, AkF32* pHitDist, AkF32* pRatio)
+{
+	// v0 -> v1 -> v2
+	AkBool bPick = MousePickingToTriangle(pV0, pV1, pV2, fNdcX, fNdcY, pHitPos, pHitDist, pRatio);
+	if (bPick)
+	{
+		return AK_TRUE;
+	}
+	// v0 -> v2 -> v3
+	bPick = MousePickingToTriangle(pV0, pV2, pV3, fNdcX, fNdcY, pHitPos, pHitDist, pRatio);
+	if (bPick)
+	{
+		return AK_TRUE;
+	}
+
+	return AK_FALSE;
+}
+
 AkBool FRenderer::MousePickingToPlane(DirectX::SimpleMath::Plane* pPlane, AkF32 fNdcX, AkF32 fNdcY, Vector3* pHitPos, AkF32* pHitDist, AkF32* pRatio)
 {
 	DirectX::SimpleMath::Ray tRay = {};

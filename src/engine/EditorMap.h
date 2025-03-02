@@ -4,11 +4,11 @@
 
 class UTextUI;
 
-class UEditorMap : public UEditor
+class UMapEditor : public UEditor
 {
 public:
-	UEditorMap();
-	virtual ~UEditorMap();
+	UMapEditor();
+	virtual ~UMapEditor();
 
 	virtual AkBool Initialize(UApplication* pApp) override;
 	virtual void BeginEditor() override;
@@ -28,7 +28,6 @@ private:
 	AkBool _bEnableCam = AK_FALSE;
 	Vector3 _vLeftTopPos = Vector3(0.0f);
 	Vector3 _vRightBottomPos = Vector3(0.0f);
-
 	UTextUI* _pSystemTextUI = nullptr;
 };
 

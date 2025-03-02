@@ -12,16 +12,16 @@
 #include "WorldMap.h"
 #include "Collider.h"
 
-UEditorMap::UEditorMap()
+UMapEditor::UMapEditor()
 {
 }
 
-UEditorMap::~UEditorMap()
+UMapEditor::~UMapEditor()
 {
 	CleanUp();
 }
 
-AkBool UEditorMap::Initialize(UApplication* pApp)
+AkBool UMapEditor::Initialize(UApplication* pApp)
 {
 	if (!UEditor::Initialize(pApp))
 	{
@@ -41,7 +41,7 @@ AkBool UEditorMap::Initialize(UApplication* pApp)
 	return AK_TRUE;
 }
 
-void UEditorMap::BeginEditor()
+void UMapEditor::BeginEditor()
 {
 	ShowCursor(AK_TRUE);
 
@@ -49,20 +49,17 @@ void UEditorMap::BeginEditor()
 
 	pEditorCam->SetCameraDirection(0.0f, DirectX::XM_PIDIV2, 0.0f);
 
-	pEditorCam->SetCameraPosition(0.0f, 15.0f, 0.0f);
+	pEditorCam->SetCameraPosition(0.0f, 100.0f, 0.0f);
 }
 
-void UEditorMap::EndEditor()
+void UMapEditor::EndEditor()
 {
 }
 
-void UEditorMap::Update(const AkF32 fDeltaTime)
+void UMapEditor::Update(const AkF32 fDeltaTime)
 {
 	USceneManager* pSceneManager = GetApp()->GetSceneManager();
 	UScene* pScene = pSceneManager->GetCurrentScene();
-	AkU32 uGameObjNum = pScene->GetGameObjectNum();
-	ULandScape* uLandScapeCell = pScene->GetLandScape();
-	// AkU32 uLandScapeCellCount = uLandScapeCell->GetCellCount();
 	UEditorCamera* pEditorCam = GetEditorCamera();
 	UGameInput* pGameInput = GetApp()->GetGameInput();
 
@@ -80,12 +77,12 @@ void UEditorMap::Update(const AkF32 fDeltaTime)
 	UpdateText();
 }
 
-void UEditorMap::Render()
+void UMapEditor::Render()
 {
 	//_pSystemTextUI->Render(300, 10, 1.0f, 1.0f, nullptr, 0.0f, nullptr);
 }
 
-void UEditorMap::CleanUp()
+void UMapEditor::CleanUp()
 {
 	if (_pSystemTextUI)
 	{
@@ -96,7 +93,7 @@ void UEditorMap::CleanUp()
 	DestroyEditorCamera();
 }
 
-void UEditorMap::UpdateMapObject()
+void UMapEditor::UpdateMapObject()
 {
 	UApplication* pApp = GetApp();
 	IRenderer* pRenderer = pApp->GetRenderer();
@@ -126,7 +123,7 @@ void UEditorMap::UpdateMapObject()
 	}
 }
 
-void UEditorMap::UpdateText()
+void UMapEditor::UpdateText()
 {
 	USceneManager* pSceneManager = GetApp()->GetSceneManager();
 	UScene* pScene = pSceneManager->GetCurrentScene();
@@ -142,7 +139,7 @@ void UEditorMap::UpdateText()
 	_pSystemTextUI->WriteText(wcText);
 }
 
-void UEditorMap::CreateBox()
+void UMapEditor::CreateBox()
 {
 	USceneManager* pSceneManager = GetApp()->GetSceneManager();
 	UScene* pScene = pSceneManager->GetCurrentScene();
