@@ -2,6 +2,7 @@
 #include <imgui.h>
 #include <iostream>
 #include <fstream>
+#include <DirectXMesh.h>
 
 extern IRenderer* g_pRenderer;
 extern float g_fNdcX;
@@ -27,12 +28,15 @@ LandScapeEditor::~LandScapeEditor()
 bool LandScapeEditor::Init()
 {
 	// 01. Grid »ý¼º.
-	MeshData grid = GeometryGenerator::MakeSquareGrid(100, 100, 100.0f, Vector2(1.0f));
+	MeshData grid = GeometryGenerator::MakeSquareGrid(100, 100, 100.0f, Vector2(8.0f));
 	MeshData_t* new_grid = new MeshData_t;
 	new_grid->uVerticeNum = grid.vertices.size();
 	new_grid->uIndicesNum = grid.indices.size();
 	new_grid->pVertices = new Vertex_t[new_grid->uVerticeNum];
 	new_grid->pIndices = new unsigned int[new_grid->uIndicesNum];
+	wcscpy_s(new_grid->wcAlbedoTextureFilename, L"../../assets/map/GroundDirtRocky020_COL_3K.dds");
+	wcscpy_s(new_grid->wcNormalTextureFilename, L"../../assets/map/GroundDirtRocky020_NRM_3K.dds");
+	wcscpy_s(new_grid->wcAoTextureFilename, L"../../assets/map/GroundDirtRocky020_AO_3K.dds");
 	memcpy(new_grid->pVertices, grid.vertices.data(), sizeof(Vertex_t) * new_grid->uVerticeNum);
 	memcpy(new_grid->pIndices, grid.indices.data(), sizeof(unsigned int) * new_grid->uIndicesNum);
 	for (int i = 0; i < new_grid->uVerticeNum; i++)
@@ -106,7 +110,7 @@ void LandScapeEditor::UpdateGui()
 	if (ImGui::RadioButton("Square type", &_brush->type, 1)) _brush->type = 1;
 	ImGui::SameLine();
 	if (ImGui::RadioButton("Zero type", &_brush->type, 2)) _brush->type = 2;
-	if(ImGui::Button("Save"))
+	if (ImGui::Button("Save"))
 	{
 		Save();
 	}
@@ -131,7 +135,7 @@ void LandScapeEditor::Load()
 	for (int i = 0; i < _landScapeMeshData->uVerticeNum; i++)
 	{
 		fin >> _landScapeMeshData->pVertices[i].vPosition.x >> _landScapeMeshData->pVertices[i].vPosition.y >> _landScapeMeshData->pVertices[i].vPosition.z;
-		fin >> _landScapeMeshData->pVertices[i].vNormalModel.x >>_landScapeMeshData->pVertices[i].vNormalModel.y >> _landScapeMeshData->pVertices[i].vNormalModel.z;
+		fin >> _landScapeMeshData->pVertices[i].vNormalModel.x >> _landScapeMeshData->pVertices[i].vNormalModel.y >> _landScapeMeshData->pVertices[i].vNormalModel.z;
 		fin >> _landScapeMeshData->pVertices[i].vTangentModel.x >> _landScapeMeshData->pVertices[i].vTangentModel.y >> _landScapeMeshData->pVertices[i].vTangentModel.z;
 		fin >> _landScapeMeshData->pVertices[i].vTexCoord.x >> _landScapeMeshData->pVertices[i].vTexCoord.y;
 	}
@@ -281,9 +285,72 @@ void LandScapeEditor::ComputeHeight(const float dt)
 
 void LandScapeEditor::ComputeNormals()
 {
-	
+	DirectX::XMFLOAT3* position = new DirectX::XMFLOAT3[_landScapeMeshData->uVerticeNum];
+	DirectX::XMFLOAT3* normal = new DirectX::XMFLOAT3[_landScapeMeshData->uVerticeNum];
+	DirectX::XMFLOAT2* texCoord = new DirectX::XMFLOAT2[_landScapeMeshData->uVerticeNum];
+	DirectX::XMFLOAT3* tangent = new DirectX::XMFLOAT3[_landScapeMeshData->uVerticeNum];
+	DirectX::XMFLOAT3* biTangent = new DirectX::XMFLOAT3[_landScapeMeshData->uVerticeNum];
+
+	for (AkU32 i = 0; i < _landScapeMeshData->uVerticeNum; i++)
+	{
+		Vertex_t v = {};
+		if (_landScapeMeshData->pVertices)
+		{
+			v = _landScapeMeshData->pVertices[i];
+			position[i] = v.vPosition;
+		}
+	}
+
+	DirectX::ComputeNormals(_landScapeMeshData->pIndices, _landScapeMeshData->uIndicesNum / 3, position, _landScapeMeshData->uVerticeNum, DirectX::CNORM_DEFAULT, normal);
+
+	if (_landScapeMeshData->pVertices)
+	{
+		for (AkU32 i = 0; i < _landScapeMeshData->uVerticeNum; i++)
+		{
+			_landScapeMeshData->pVertices[i].vNormalModel = normal[i];
+		}
+	}
+
+	delete[] position;
+	delete[] normal;
+	delete[] texCoord;
+	delete[] tangent;
+	delete[] biTangent;
 }
 
 void LandScapeEditor::ComputeTangents()
 {
+	DirectX::XMFLOAT3* position = new DirectX::XMFLOAT3[_landScapeMeshData->uVerticeNum];
+	DirectX::XMFLOAT3* normal = new DirectX::XMFLOAT3[_landScapeMeshData->uVerticeNum];
+	DirectX::XMFLOAT2* texCoord = new DirectX::XMFLOAT2[_landScapeMeshData->uVerticeNum];
+	DirectX::XMFLOAT3* tangent = new DirectX::XMFLOAT3[_landScapeMeshData->uVerticeNum];
+	DirectX::XMFLOAT3* biTangent = new DirectX::XMFLOAT3[_landScapeMeshData->uVerticeNum];
+
+	for (AkU32 i = 0; i < _landScapeMeshData->uVerticeNum; i++)
+	{
+		Vertex_t v = {};
+		if (_landScapeMeshData->pVertices)
+		{
+			v = _landScapeMeshData->pVertices[i];
+			position[i] = v.vPosition;
+			normal[i] = v.vNormalModel;
+			texCoord[i] = v.vTexCoord;
+		}
+	}
+
+	DirectX::ComputeTangentFrame(_landScapeMeshData->pIndices, _landScapeMeshData->uIndicesNum / 3, position, normal, texCoord, _landScapeMeshData->uVerticeNum, tangent, biTangent);
+
+	if (_landScapeMeshData->pVertices)
+	{
+		for (AkU32 i = 0; i < _landScapeMeshData->uVerticeNum; i++)
+		{
+			_landScapeMeshData->pVertices[i].vTangentModel = tangent[i];
+		}
+	}
+
+	delete[] position;
+	delete[] normal;
+	delete[] texCoord;
+	delete[] tangent;
+	delete[] biTangent;
 }

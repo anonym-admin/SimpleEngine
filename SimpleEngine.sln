@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mdexp", "mdexp\mdexp.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mapeditor", "mapeditor\mapeditor.vcxproj", "{F8C823D1-C6D1-45C2-8CC0-831C942788A8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client", "src\client\client.vcxproj", "{5B7231EB-FB7F-4394-B4F6-44B72E34B393}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +53,14 @@ Global
 		{F8C823D1-C6D1-45C2-8CC0-831C942788A8}.Release|x64.Build.0 = Release|x64
 		{F8C823D1-C6D1-45C2-8CC0-831C942788A8}.Release|x86.ActiveCfg = Release|Win32
 		{F8C823D1-C6D1-45C2-8CC0-831C942788A8}.Release|x86.Build.0 = Release|Win32
+		{5B7231EB-FB7F-4394-B4F6-44B72E34B393}.Debug|x64.ActiveCfg = Debug|x64
+		{5B7231EB-FB7F-4394-B4F6-44B72E34B393}.Debug|x64.Build.0 = Debug|x64
+		{5B7231EB-FB7F-4394-B4F6-44B72E34B393}.Debug|x86.ActiveCfg = Debug|Win32
+		{5B7231EB-FB7F-4394-B4F6-44B72E34B393}.Debug|x86.Build.0 = Debug|Win32
+		{5B7231EB-FB7F-4394-B4F6-44B72E34B393}.Release|x64.ActiveCfg = Release|x64
+		{5B7231EB-FB7F-4394-B4F6-44B72E34B393}.Release|x64.Build.0 = Release|x64
+		{5B7231EB-FB7F-4394-B4F6-44B72E34B393}.Release|x86.ActiveCfg = Release|Win32
+		{5B7231EB-FB7F-4394-B4F6-44B72E34B393}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

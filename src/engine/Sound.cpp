@@ -64,7 +64,7 @@ USound* USoundManager::LoadSound(const char* pFilename)
 	{
 		(*ppSysSound)->release();
 		(*ppSysSound) = nullptr;
-		return AK_FALSE;
+		return nullptr;
 	}
 
 	_pSound = pSound;

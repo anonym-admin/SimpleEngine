@@ -170,6 +170,18 @@
     <ClInclude Include="..\..\utils\UtilFunc.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\interface\IRenderer.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor.h">
+      <Filter>Source\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorMap.h">
+      <Filter>Source\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorModel.h">
+      <Filter>Source\Editor</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\common\AkEnum.h">
       <Filter>Common</Filter>
     </ClInclude>
@@ -187,18 +199,6 @@
     </ClInclude>
     <ClInclude Include="..\..\common\AkVertex.h">
       <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\interface\IRenderer.h">
-      <Filter>Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor.h">
-      <Filter>Source\Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="EditorMap.h">
-      <Filter>Source\Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="EditorModel.h">
-      <Filter>Source\Editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -349,9 +349,6 @@
     <ClCompile Include="..\..\utils\UtilFunc.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\AkMath.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
     <ClCompile Include="EditorMap.cpp">
       <Filter>Source\Editor</Filter>
     </ClCompile>
@@ -360,6 +357,9 @@
     </ClCompile>
     <ClCompile Include="Editor.cpp">
       <Filter>Source\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\AkMath.cpp">
+      <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
