@@ -70,6 +70,7 @@
     <ClInclude Include="SceneInGame.h" />
     <ClInclude Include="SceneLoading.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SkinnedModel.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="TextUI.h" />
     <ClInclude Include="Timer.h" />
@@ -129,6 +130,7 @@
     <ClCompile Include="SceneInGame.cpp" />
     <ClCompile Include="SceneLoading.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SkinnedModel.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="TextUI.cpp" />
     <ClCompile Include="Timer.cpp" />

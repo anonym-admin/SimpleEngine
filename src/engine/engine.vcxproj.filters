@@ -21,6 +21,9 @@
     <Filter Include="Source\Editor">
       <UniqueIdentifier>{f167d0c5-d902-496a-ba18-cb310eb85c99}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\model">
+      <UniqueIdentifier>{4a9e67e0-e925-49e9-8f5a-b758999cbce5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h">
@@ -59,9 +62,6 @@
     <ClInclude Include="Dancer.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="DancerModel.h">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="EditorManager.h">
       <Filter>Include</Filter>
     </ClInclude>
@@ -86,12 +86,6 @@
     <ClInclude Include="LandScape.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelImporter.h">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="ModelManager.h">
       <Filter>Include</Filter>
     </ClInclude>
@@ -102,9 +96,6 @@
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerModel.h">
       <Filter>Include</Filter>
     </ClInclude>
     <ClInclude Include="RigidBody.h">
@@ -200,6 +191,21 @@
     <ClInclude Include="..\..\common\AkVertex.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Source\model</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelImporter.h">
+      <Filter>Source\model</Filter>
+    </ClInclude>
+    <ClInclude Include="DancerModel.h">
+      <Filter>Source\model</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerModel.h">
+      <Filter>Source\model</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedModel.h">
+      <Filter>Source\model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp">
@@ -238,9 +244,6 @@
     <ClCompile Include="Dancer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="DancerModel.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="EditorManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -268,12 +271,6 @@
     <ClCompile Include="LandScape.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelImporter.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="ModelManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
@@ -284,9 +281,6 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerModel.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="RigidBody.cpp">
@@ -360,6 +354,21 @@
     </ClCompile>
     <ClCompile Include="..\..\common\AkMath.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source\model</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelImporter.cpp">
+      <Filter>Source\model</Filter>
+    </ClCompile>
+    <ClCompile Include="DancerModel.cpp">
+      <Filter>Source\model</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerModel.cpp">
+      <Filter>Source\model</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedModel.cpp">
+      <Filter>Source\model</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
