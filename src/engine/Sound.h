@@ -8,14 +8,14 @@ Sound Manager
 
 class USound;
 
-class USoundManager
+class SoundManager
 {
 public:
-	USoundManager();
-	~USoundManager();
+	SoundManager();
+	~SoundManager();
 
 	AkBool Initialize();
-	void Update(const AkF32 fDeltaTime);
+	void Update();
 	void Render();
 
 	USound* LoadSound(const char* pFilename);
@@ -44,7 +44,7 @@ public:
 	~USound();
 	
 	AkBool Initialize(FMOD::System* pSys);
-	void Update(const AkF32 fDeltaTime);
+	void Update();
 	void Render();
 
 	AkBool Play(AkBool bLoop);

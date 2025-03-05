@@ -727,12 +727,12 @@ MeshData_t* UGeometryGenerator::MakeGrid(AkU32* pMeshDataNum, const AkF32 fScale
 }
 
 // 비동기 처리 필요!!
-MeshData_t* UGeometryGenerator::ReadFromFile(UApplication* pApp, AkU32* pMeshDataNum, const wchar_t* wcBasePath, const wchar_t* wcFilename, AkBool bIsAnim, Matrix* pDefaultMat, Matrix const** pBoneOffsetMat, AkI32 const** pBoneHierarchy, AkU32* pBoneNum)
+MeshData_t* UGeometryGenerator::ReadFromFile(Application* pApp, AkU32* pMeshDataNum, const wchar_t* wcBasePath, const wchar_t* wcFilename, AkBool bIsAnim, Matrix* pDefaultMat, Matrix const** pBoneOffsetMat, AkI32 const** pBoneHierarchy, AkU32* pBoneNum)
 {
-	UModelImporter tModelImporter;
+	ModelImporter tModelImporter;
 	MeshData_t* pMeshData = nullptr;
 
-	tModelImporter.Load(pApp, wcBasePath, wcFilename, bIsAnim);
+	tModelImporter.Load(wcBasePath, wcFilename, bIsAnim);
 
 	pMeshData = tModelImporter.GetMeshData();
 

@@ -14,7 +14,7 @@ public:
 	UPanelUI();
 	virtual ~UPanelUI();
 
-	AkBool Initialize(UApplication* pApp, const wchar_t* wcTexFileName, AkU32 uPosX, AkU32 uPosY, AkU32 uTexWidth, AkU32 uTexHeight);
+	AkBool Initialize(const wchar_t* wcTexFileName, AkU32 uPosX, AkU32 uPosY, AkU32 uTexWidth, AkU32 uTexHeight);
 
 	virtual void MouseOn() override;
 	virtual void MouseLBtnDown() override;

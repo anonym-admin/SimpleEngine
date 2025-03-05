@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Scene.h"
 #include "Actor.h"
-#include "Application.h"
 #include "LandScape.h"
 
 /*
@@ -10,49 +9,100 @@ Scene base class
 ==================
 */
 
-UScene::UScene()
+Scene::Scene()
 {
 }
 
-UScene::~UScene()
+Scene::~Scene()
 {
 	CleanUp();
 }
 
-AkBool UScene::Initialize(UApplication* pApp)
+void Scene::Update()
 {
-	_pApp = pApp;
+	GameObjContainer_t** pGameObjContainerList = GetAllGameObject();
 
-	_pRenderer = _pApp->GetRenderer();
+	// Update game obj.
+	for (AkU32 i = 0; i < (AkU32)GAME_OBJECT_GROUP_TYPE::GAME_OBJ_GROUP_TYPE_COUNT; i++)
+	{
+		if (pGameObjContainerList[i])
+		{
+			List_t* pCur = pGameObjContainerList[i]->pGameObjHead;
+			while (pCur != nullptr)
+			{
+				Actor* pActor = reinterpret_cast<Actor*>(pCur->pData);
+				pActor->Update();
 
-	return AK_TRUE;
+				pCur = pCur->pNext;
+			}
+		}
+	}
 }
 
-void UScene::Update(const AkF32 fDeltaTime)
+void Scene::FinalUpdate()
 {
+	GameObjContainer_t** pGameObjContainerList = GetAllGameObject();
 
+	// Final Update game obj.
+	for (AkU32 i = 0; i < (AkU32)GAME_OBJECT_GROUP_TYPE::GAME_OBJ_GROUP_TYPE_COUNT; i++)
+	{
+		if (pGameObjContainerList[i])
+		{
+			List_t* pCur = pGameObjContainerList[i]->pGameObjHead;
+			while (pCur != nullptr)
+			{
+				Actor* pActor = reinterpret_cast<Actor*>(pCur->pData);
+				pActor->FinalUpdate();
+
+				pCur = pCur->pNext;
+			}
+		}
+	}
 }
 
-void UScene::FinalUpdate(const AkF32 fDeltaTime)
+void Scene::Render()
 {
+	GameObjContainer_t** pGameObjContainerList = GetAllGameObject();
 
+	// Render game obj.
+	for (AkU32 i = 0; i < (AkU32)GAME_OBJECT_GROUP_TYPE::GAME_OBJ_GROUP_TYPE_COUNT; i++)
+	{
+		if (pGameObjContainerList[i])
+		{
+			List_t* pCur = pGameObjContainerList[i]->pGameObjHead;
+			while (pCur != nullptr)
+			{
+				Actor* pActor = reinterpret_cast<Actor*>(pCur->pData);
+				pActor->Render();
+
+				pCur = pCur->pNext;
+			}
+		}
+	}
 }
 
-void UScene::RenderShadowPass()
+void Scene::RenderShadow()
 {
+	GameObjContainer_t** pGameObjContainerList = GetAllGameObject();
+
+	// Render game obj.
+	for (AkU32 i = 0; i < (AkU32)GAME_OBJECT_GROUP_TYPE::GAME_OBJ_GROUP_TYPE_COUNT; i++)
+	{
+		if (pGameObjContainerList[i])
+		{
+			List_t* pCur = pGameObjContainerList[i]->pGameObjHead;
+			while (pCur != nullptr)
+			{
+				Actor* pActor = reinterpret_cast<Actor*>(pCur->pData);
+				pActor->RenderShadow();
+
+				pCur = pCur->pNext;
+			}
+		}
+	}
 }
 
-void UScene::Render()
-{
-
-}
-
-void UScene::SetName(const wchar_t* wcName)
-{
-	wcscpy_s(_wcName, wcName);
-}
-
-void UScene::AddGameObject(GAME_OBJECT_GROUP_TYPE eGameObjType, UActor* pGameObj)
+void Scene::AddGameObject(GAME_OBJECT_GROUP_TYPE eGameObjType, Actor* pGameObj)
 {
 	GameObjContainer_t* pGameObjContainer = _pGameObjContainerList[(AkU32)eGameObjType];
 
@@ -71,18 +121,7 @@ void UScene::AddGameObject(GAME_OBJECT_GROUP_TYPE eGameObjType, UActor* pGameObj
 	_uGameObjNum++;
 }
 
-void UScene::CreateCommonFontObject(const wchar_t* wcFontFamilyName, AkF32 fFontSize)
-{
-	_pFontObj = _pRenderer->CreateFontObject(wcFontFamilyName, fFontSize);
-}
-
-void UScene::CreateCommonSpriteObject()
-{
-	_pSpriteObj = _pRenderer->CreateSpriteObject();
-	_pSpriteObj->SetDrawBackground(AK_FALSE);
-}
-
-void UScene::CleanUp()
+void Scene::CleanUp()
 {
 	for (AkU32 i = 0; i < (AkU32)GAME_OBJECT_GROUP_TYPE::GAME_OBJ_GROUP_TYPE_COUNT; i++)
 	{
@@ -92,7 +131,7 @@ void UScene::CleanUp()
 			while (pDel != nullptr)
 			{
 				List_t* pNext = pDel->pNext;
-				UActor* pActor = reinterpret_cast<UActor*>(pDel->pData);
+				Actor* pActor = reinterpret_cast<Actor*>(pDel->pData);
 				if (pActor)
 				{
 					delete pActor;
@@ -105,32 +144,16 @@ void UScene::CleanUp()
 			_pGameObjContainerList[i] = nullptr;
 		}
 	}
-
-	if (_pFontObj)
-	{
-		_pRenderer->DestroyFontObject(_pFontObj);
-		_pFontObj = nullptr;
-	}
-	if (_pSpriteObj)
-	{
-		_pSpriteObj->Release();
-		_pSpriteObj = nullptr;
-	}
-	if (_pLandScape)
-	{
-		delete _pLandScape;
-		_pLandScape = nullptr;
-	}
 }
 
-GameObjContainer_t* UScene::AllocGameObjectContainer()
+GameObjContainer_t* Scene::AllocGameObjectContainer()
 {
 	GameObjContainer_t* pGameObjContainer = (GameObjContainer_t*)malloc(sizeof(GameObjContainer_t));
 	memset(pGameObjContainer, 0, sizeof(GameObjContainer_t));
 	return pGameObjContainer;
 }
 
-void UScene::FreeGameObjectContainer(GameObjContainer_t* pGameObjContainer)
+void Scene::FreeGameObjectContainer(GameObjContainer_t* pGameObjContainer)
 {
 	if (pGameObjContainer)
 	{

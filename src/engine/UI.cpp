@@ -21,18 +21,14 @@ UUI::~UUI()
 	CleanUp();
 }
 
-AkBool UUI::Initialize(UApplication* pApp)
+AkBool UUI::Initialize()
 {
-	_pApp = pApp;
-
 	if (sm_pInitRefCount)
 	{
 		return AK_TRUE;
 	}
 
-	_pRenderer = pApp->GetRenderer();
-
-	sm_pCommonSpriteObj = _pRenderer->CreateSpriteObject();
+	sm_pCommonSpriteObj = GRenderer->CreateSpriteObject();
 
 	sm_pInitRefCount++;
 
@@ -96,18 +92,16 @@ void UUI::SetDrawBackGround(AkBool bDrawBackGround)
 	sm_pCommonSpriteObj->SetDrawBackground(bDrawBackGround);
 }
 
-void UUI::Update(const AkF32 fDeltaTime)
+void UUI::Update()
 {
 	MouseOnCheck();
 
-	UpdateChildUI(fDeltaTime);
+	UpdateChildUI();
 }
 
 void UUI::Render()
 {
-	IRenderer* pRenderer = GetApp()->GetRenderer();
-
-	pRenderer->RenderSpriteWithTex(sm_pCommonSpriteObj, _iPosX, _iPosY, _fScaleX, _fScaleY, _bUseRect ? &_tRect : nullptr, _fDepth, _pTexHandle);
+	GRenderer->RenderSpriteWithTex(sm_pCommonSpriteObj, _iPosX, _iPosY, _fScaleX, _fScaleY, _bUseRect ? &_tRect : nullptr, _fDepth, _pTexHandle);
 
 	RenderChildUI();
 }
@@ -152,10 +146,8 @@ void UUI::CleanUpChildUI()
 
 void UUI::MouseOnCheck()
 {
-	UGameInput* pGameInput = _pApp->GetGameInput();
-
-	AkI32 iPosX = pGameInput->GetMouseX();
-	AkI32 iPosY = pGameInput->GetMouseY();
+	AkI32 iPosX = GGameInput->GetMouseX();
+	AkI32 iPosY = GGameInput->GetMouseY();
 
 	AkI32 iLeft = _iPosX;
 	AkI32 iRight = iLeft + (AkI32)_uWidth;
@@ -172,7 +164,7 @@ void UUI::MouseOnCheck()
 	}
 }
 
-void UUI::UpdateChildUI(const AkF32 fDeltaTime)
+void UUI::UpdateChildUI()
 {
 	List_t* pCur = _pChildUIHead;
 	while (pCur != nullptr)
@@ -184,7 +176,7 @@ void UUI::UpdateChildUI(const AkF32 fDeltaTime)
 
 		pChildUI->GetRelativePosition(&iOffsetX, &iOffsetY);
 		pChildUI->SetPosition(_iPosX + iOffsetX, _iPosY + iOffsetY);
-		pChildUI->Update(fDeltaTime);
+		pChildUI->Update();
 
 		pCur = pCur->pNext;
 	}

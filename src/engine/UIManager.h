@@ -6,18 +6,16 @@ UI Manager
 ==============
 */
 
-class UApplication;
 class UUI;
 class UTextUI;
 
-class UUIManager
+class UIManager
 {
 public:
-	UUIManager();
-	~UUIManager();
+	UIManager();
+	~UIManager();
 
-	AkBool Initialize(UApplication* pApp);
-	void Update(const AkF32 fDeltaTime);
+	void Update();
 	void Render();
 	
 	void AddUI(UUI* pUI, UI_OBJECT_TYPE eType);
@@ -32,7 +30,7 @@ private:
 	UUI* GetTargetedUI(UUI* pRootUI);
 
 private:
-	UApplication* _pApp = nullptr;
+	Application* _pApp = nullptr;
 
 	UUI* _ppUIList[(AkU32)UI_OBJECT_TYPE::UI_OBJ_TYPE_COUNT] = {};
 	AkBool _pOnFlag[(AkU32)UI_OBJECT_TYPE::UI_OBJ_TYPE_COUNT] = {};

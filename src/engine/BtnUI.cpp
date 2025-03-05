@@ -17,15 +17,13 @@ UBtnUI::~UBtnUI()
 	CleanUp();
 }
 
-AkBool UBtnUI::Initialize(UApplication* pApp, const wchar_t* wcTexFileName, AkU32 uPosX, AkU32 uPosY, AkU32 uTexWidth, AkU32 uTexHeight)
+AkBool UBtnUI::Initialize(const wchar_t* wcTexFileName, AkU32 uPosX, AkU32 uPosY, AkU32 uTexWidth, AkU32 uTexHeight)
 {
-	if (!UPanelUI::Initialize(pApp, wcTexFileName, uPosX, uPosY, uTexWidth, uTexHeight))
+	if (!UPanelUI::Initialize(wcTexFileName, uPosX, uPosY, uTexWidth, uTexHeight))
 	{
 		__debugbreak();
 		return AK_FALSE;
 	}
-
-	_pApp = pApp;
 
 	return AK_TRUE;
 }

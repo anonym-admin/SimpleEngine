@@ -18,9 +18,9 @@ UInputUI::~UInputUI()
 	CleanUp();
 }
 
-AkBool UInputUI::Initialize(UApplication* pApp, AkU32 uTextTextureWidth, AkU32 uTextTextureHeight, const wchar_t* wcFontFamilyName, AkF32 fFontSize)
+AkBool UInputUI::Initialize(AkU32 uTextTextureWidth, AkU32 uTextTextureHeight, const wchar_t* wcFontFamilyName, AkF32 fFontSize)
 {
-	if (!UTextUI::Initialize(pApp, uTextTextureWidth, uTextTextureHeight, wcFontFamilyName, fFontSize))
+	if (!UTextUI::Initialize(uTextTextureWidth, uTextTextureHeight, wcFontFamilyName, fFontSize))
 	{
 		__debugbreak();
 		return AK_FALSE;
@@ -28,7 +28,7 @@ AkBool UInputUI::Initialize(UApplication* pApp, AkU32 uTextTextureWidth, AkU32 u
 
 	// Create the Chatting Thread.
 	AkU32 uThreadID = 0;
-	_tChatParam.pApp = pApp;
+	_tChatParam.pApp = GApp;
 	_tChatParam.pUI = this;
 	_tChatParam.hThread = (HANDLE)_beginthreadex(nullptr, 0, ProcessChatting, &_tChatParam, 0, &uThreadID);
 	for (AkU32 i = 0; i < (AkU32)CHAT_THREAD_EVENT_TYPE::CHAT_THREAD_EVENT_COUNT; i++)
@@ -39,9 +39,9 @@ AkBool UInputUI::Initialize(UApplication* pApp, AkU32 uTextTextureWidth, AkU32 u
 	return AK_TRUE;
 }
 
-void UInputUI::Update(const AkF32 fDeltaTime)
+void UInputUI::Update()
 {
-	UUI::Update(fDeltaTime);
+	UUI::Update();
 
 	SetEvent(_tChatParam.hEvent[(AkU32)CHAT_THREAD_EVENT_TYPE::CHAT_THREAD_EVENT_START]);
 }
@@ -73,12 +73,11 @@ AkU32 ProcessChatting(void* pChatParam)
 
 	CHAT_THREAD_PARAM* pParam = (CHAT_THREAD_PARAM*)pChatParam;
 	UApplication* pApp = (UApplication*)pParam->pApp;
-	UGameInput* pGameInput = pApp->GetGameInput();
 	UInputUI* pDynamicText = (UInputUI*)pParam->pUI;
 	HANDLE* pEvent = pParam->hEvent;
 	AkBool bEndFlag = AK_FALSE;
 
-	if (!pGameInput)
+	if (GGameInput)
 	{
 		__debugbreak();
 	}
@@ -93,7 +92,7 @@ AkU32 ProcessChatting(void* pChatParam)
 
 			if (pDynamicText->IsMouseOn()) // 해당 함수가 적용되기 위해선 UI Manager 에서 관리되어야 함.
 			{
-				ProcessChatInput(pGameInput, wcText);
+				ProcessChatInput(GGameInput, wcText);
 				pDynamicText->WriteText(wcText);
 			}
 
@@ -115,7 +114,7 @@ AkU32 ProcessChatting(void* pChatParam)
 	return 125;
 }
 
-void ProcessChatInput(class UGameInput* pGameInput, wchar_t* wcBuf)
+void ProcessChatInput(class GameInput* pGameInput, wchar_t* wcBuf)
 {
 	static AkI32 i = 0;
 	static wchar_t wcPrevBuf[256] = {};

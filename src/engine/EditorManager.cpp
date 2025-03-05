@@ -1,94 +1,98 @@
 #include "pch.h"
 #include "EditorManager.h"
-#include "EditorMap.h"
-#include "EditorModel.h"
+#include "Editor.h"
 
-UEditorManager::UEditorManager()
+EditorManager::EditorManager()
 {
 }
 
-UEditorManager::~UEditorManager()
+EditorManager::~EditorManager()
 {
-	CleanUp();
+    CleanUp();
 }
 
-AkBool UEditorManager::Initialize(UApplication* pApp)
+void EditorManager::Update()
 {
-	_pApp = pApp;
-
-	{
-		UEditor* pEditor = CreateEditor(EDITOR_TYPE::EDITOR_TYPE_CHARACTER);
-	}
-
-	{
-		UEditor* pEditor = CreateEditor(EDITOR_TYPE::EDITOR_TYPE_MAP);
-	}
-
-	_pCurEditor = _pEditorList[(AkU32)EDITOR_TYPE::EDITOR_TYPE_CHARACTER];
-
-	return AK_TRUE;
+    if (_pCurEditor)
+    {
+        _pCurEditor->Update();
+    }
 }
 
-void UEditorManager::Update(const AkF32 fDeltaTime)
+void EditorManager::FinalUpdate()
 {
-	if (_pCurEditor)
-	{
-		_pCurEditor->Update(fDeltaTime);
-	}
+    if (_pCurEditor)
+    {
+        _pCurEditor->FinalUpdate();
+    }
 }
 
-void UEditorManager::Render()
+void EditorManager::RenderShadow()
 {
-	if (_pCurEditor)
-	{
-		_pCurEditor->Render();
-	}
+    if (_pCurEditor)
+    {
+        _pCurEditor->RenderShadow();
+    }
 }
 
-void UEditorManager::ChangeEditor(EDITOR_TYPE eEditorType)
+void EditorManager::Render()
 {
-	if (!_pCurEditor)
-	{
-		__debugbreak();
-		return;
-	}
-
-	_pCurEditor->EndEditor();
-
-	_pCurEditor = _pEditorList[(AkU32)eEditorType];
-
-	_pCurEditor->BeginEditor();
+    if (_pCurEditor)
+    {
+        _pCurEditor->Render();
+    }
 }
 
-void UEditorManager::CleanUp()
+void EditorManager::ChangeEditor(EDITOR_TYPE eEditorType)
 {
-	for (AkU32 i = 0; i < _uEditorNum; i++)
-	{
-		if (_pEditorList[i])
-		{
-			delete _pEditorList[i];
-			_pEditorList[i] = nullptr;
-		}
-	}
+    if (!_pCurEditor)
+    {
+        __debugbreak();
+        return;
+    }
+
+    _pCurEditor->EndEditor();
+
+    _pCurEditor = _pEditorList[(AkU32)eEditorType];
+
+    _pCurEditor->BeginEditor();
+
+    _eType = eEditorType;
 }
 
-UEditor* UEditorManager::CreateEditor(EDITOR_TYPE eEditorType)
+Editor* EditorManager::AddEditor(EDITOR_TYPE eType, Editor* pScene)
 {
-	UEditor* pEditor = nullptr;
+    if (nullptr != _pEditorList[(AkU32)eType])
+        return _pEditorList[(AkU32)eType];
 
-	switch (eEditorType)
-	{
-	case EDITOR_TYPE::EDITOR_TYPE_CHARACTER:
-		pEditor = new UEditorModel;
-		break;
-	case EDITOR_TYPE::EDITOR_TYPE_MAP:
-		pEditor = new UMapEditor;
-		break;
-	}
-
-	pEditor->Initialize(_pApp);
-	_pEditorList[(AkU32)eEditorType] = pEditor;
-	_uEditorNum++;
-
-	return pEditor;
+    _pEditorList[(AkU32)eType] = pScene;
+    _uEditorNum++;
+    return  _pEditorList[(AkU32)eType];
 }
+
+Editor* EditorManager::BindCurrnetEditor(EDITOR_TYPE eType)
+{
+    _pCurEditor = _pEditorList[(AkU32)eType];
+    _eType = eType;
+    return _pCurEditor;
+}
+
+void EditorManager::UnBindCurrentEditor()
+{
+    _pCurEditor = nullptr;
+}
+
+void EditorManager::CleanUp()
+{
+    for (AkU32 i = 0; i < _uEditorNum; i++)
+    {
+        if (_pEditorList[i])
+        {
+            delete _pEditorList[i];
+            _pEditorList[i] = nullptr;
+        }
+    }
+}
+
+
+

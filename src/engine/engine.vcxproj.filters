@@ -4,139 +4,53 @@
     <Filter Include="Utils">
       <UniqueIdentifier>{431b9be4-db54-4659-af78-4e36c1944e20}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Common">
-      <UniqueIdentifier>{3c01b0b0-75e0-43cb-8cd9-78eecad9cd08}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interface">
+    <Filter Include="interface">
       <UniqueIdentifier>{6b087780-d39e-4ccc-8d6b-feabb45bfc71}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="common">
+      <UniqueIdentifier>{3c01b0b0-75e0-43cb-8cd9-78eecad9cd08}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Include">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="src">
+      <UniqueIdentifier>{11be60dc-790f-4bbf-9da6-ae94b4c7a578}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Editor">
+    <Filter Include="src\comp">
+      <UniqueIdentifier>{cbe017d4-43a4-4f57-b796-740a339c1c94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\editor">
       <UniqueIdentifier>{f167d0c5-d902-496a-ba18-cb310eb85c99}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\model">
+    <Filter Include="src\entry">
+      <UniqueIdentifier>{a84279f2-34ef-4d1b-8198-92418064a76e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\framework">
+      <UniqueIdentifier>{c31216fc-f5c9-4ce3-a7f9-2ce39ad7f747}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\mgr">
+      <UniqueIdentifier>{2d69861a-90af-4ffd-8851-379cc1bfea46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\model">
       <UniqueIdentifier>{4a9e67e0-e925-49e9-8f5a-b758999cbce5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\animation">
+      <UniqueIdentifier>{6a362bd6-268e-47e5-a63c-4ad41bfb1c88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\pch">
+      <UniqueIdentifier>{ebf275a7-259d-42df-b3de-5249c4b4f9d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\object">
+      <UniqueIdentifier>{466755ad-e272-452f-95ce-d11371453b59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\scene">
+      <UniqueIdentifier>{14b7154e-2ec7-43ed-8013-d741c1935e8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ui">
+      <UniqueIdentifier>{36a1949b-5d40-4791-9a6b-0b0085df5b56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\comp\collider">
+      <UniqueIdentifier>{2fecc5b4-53ee-4e04-b81b-2352ac79df55}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Actor.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Application.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="AssetManager.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="BRS_74.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="BRS_74_Model.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="BtnUI.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Building.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Collider.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionManager.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Dancer.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="EditorManager.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="EventManager.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="GameInput.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="GeometryGenerator.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Gravity.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="InputUI.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="KDTree.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="LandScape.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelManager.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="PanelUI.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="RigidBody.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneInGame.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneLoading.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneManager.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Sound.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="TextUI.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Type.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="UI.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="UIManager.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Weapon.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="WorldMap.h">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\utils\HashTable.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -162,163 +76,139 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\interface\IRenderer.h">
-      <Filter>Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="Editor.h">
-      <Filter>Source\Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="EditorMap.h">
-      <Filter>Source\Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="EditorModel.h">
-      <Filter>Source\Editor</Filter>
+      <Filter>interface</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\AkEnum.h">
-      <Filter>Common</Filter>
+      <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\AkMacro.h">
-      <Filter>Common</Filter>
+      <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\AkMath.h">
-      <Filter>Common</Filter>
+      <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\AkMeshData.h">
-      <Filter>Common</Filter>
+      <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\AkType.h">
-      <Filter>Common</Filter>
+      <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\AkVertex.h">
-      <Filter>Common</Filter>
+      <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>Source\model</Filter>
+    <ClInclude Include="GeometryGenerator.h" />
+    <ClInclude Include="MotionGraph.h" />
+    <ClInclude Include="Sound.h" />
+    <ClInclude Include="Animation.h">
+      <Filter>src\animation</Filter>
     </ClInclude>
-    <ClInclude Include="ModelImporter.h">
-      <Filter>Source\model</Filter>
+    <ClInclude Include="Animator.h">
+      <Filter>src\mgr</Filter>
     </ClInclude>
-    <ClInclude Include="DancerModel.h">
-      <Filter>Source\model</Filter>
+    <ClInclude Include="BaseObject.h">
+      <Filter>src\object</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerModel.h">
-      <Filter>Source\model</Filter>
+    <ClInclude Include="pch.h">
+      <Filter>src\pch</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="InGameScene.h">
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>src\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Type.h">
+      <Filter>src\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Macro.h">
+      <Filter>src\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Enum.h">
+      <Filter>src\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>src\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>src\mgr</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetManager.h">
+      <Filter>src\mgr</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>src\mgr</Filter>
+    </ClInclude>
+    <ClInclude Include="EventHandler.h">
+      <Filter>src\mgr</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorManager.h">
+      <Filter>src\mgr</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>src\mgr</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>src\comp</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>src\comp</Filter>
     </ClInclude>
     <ClInclude Include="SkinnedModel.h">
-      <Filter>Source\model</Filter>
+      <Filter>src\model</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelEditor.h">
+      <Filter>src\editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Editor.h">
+      <Filter>src\editor</Filter>
+    </ClInclude>
+    <ClInclude Include="MapEditor.h">
+      <Filter>src\editor</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelImporter.h">
+      <Filter>src\model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>src\model</Filter>
+    </ClInclude>
+    <ClInclude Include="Actor.h">
+      <Filter>src\object</Filter>
+    </ClInclude>
+    <ClInclude Include="Spawn.h">
+      <Filter>src\object</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>src\object</Filter>
+    </ClInclude>
+    <ClInclude Include="GameInput.h">
+      <Filter>src\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>src\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>src\framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>src\comp</Filter>
+    </ClInclude>
+    <ClInclude Include="Swat.h">
+      <Filter>src\object</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>src\comp\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereCollider.h">
+      <Filter>src\comp\collider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Actor.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Application.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="AssetManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="BRS_74.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="BRS_74_Model.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="BtnUI.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Building.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Collider.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Dancer.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="EditorManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="EntryPoint.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="EventManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="GameInput.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="GeometryGenerator.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Gravity.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="InputUI.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="KDTree.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="LandScape.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="PanelUI.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="RigidBody.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneInGame.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneLoading.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Sound.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="TextUI.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="UI.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="UIManager.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Weapon.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="WorldMap.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\utils\HashTable.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
@@ -343,32 +233,113 @@
     <ClCompile Include="..\..\utils\UtilFunc.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="EditorMap.cpp">
-      <Filter>Source\Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="EditorModel.cpp">
-      <Filter>Source\Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="Editor.cpp">
-      <Filter>Source\Editor</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\AkMath.cpp">
-      <Filter>Common</Filter>
+      <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>Source\model</Filter>
+    <ClCompile Include="GeometryGenerator.cpp" />
+    <ClCompile Include="MotionGraph.cpp" />
+    <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="Animation.cpp">
+      <Filter>src\animation</Filter>
     </ClCompile>
-    <ClCompile Include="ModelImporter.cpp">
-      <Filter>Source\model</Filter>
+    <ClCompile Include="Animator.cpp">
+      <Filter>src\mgr</Filter>
     </ClCompile>
-    <ClCompile Include="DancerModel.cpp">
-      <Filter>Source\model</Filter>
+    <ClCompile Include="BaseObject.cpp">
+      <Filter>src\object</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerModel.cpp">
-      <Filter>Source\model</Filter>
+    <ClCompile Include="pch.cpp">
+      <Filter>src\pch</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadingScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="InGameScene.cpp">
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="EntryPoint.cpp">
+      <Filter>src\entry</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>src\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Global.cpp">
+      <Filter>src\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>src\mgr</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetManager.cpp">
+      <Filter>src\mgr</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>src\mgr</Filter>
+    </ClCompile>
+    <ClCompile Include="EventHandler.cpp">
+      <Filter>src\mgr</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorManager.cpp">
+      <Filter>src\mgr</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>src\mgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>src\comp</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>src\comp</Filter>
     </ClCompile>
     <ClCompile Include="SkinnedModel.cpp">
-      <Filter>Source\model</Filter>
+      <Filter>src\model</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor.cpp">
+      <Filter>src\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="MapEditor.cpp">
+      <Filter>src\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelEditor.cpp">
+      <Filter>src\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelImporter.cpp">
+      <Filter>src\model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>src\model</Filter>
+    </ClCompile>
+    <ClCompile Include="Actor.cpp">
+      <Filter>src\object</Filter>
+    </ClCompile>
+    <ClCompile Include="Spawn.cpp">
+      <Filter>src\object</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>src\object</Filter>
+    </ClCompile>
+    <ClCompile Include="GameInput.cpp">
+      <Filter>src\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>src\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>src\framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>src\comp</Filter>
+    </ClCompile>
+    <ClCompile Include="Swat.cpp">
+      <Filter>src\object</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>src\comp\collider</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereCollider.cpp">
+      <Filter>src\comp\collider</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

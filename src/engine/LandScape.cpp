@@ -4,7 +4,6 @@
 #include "GeometryGenerator.h"
 #include "Collider.h"
 #include "SceneManager.h"
-#include "SceneInGame.h"
 #include "Actor.h"
 #include "DirectXMesh.h"
 
@@ -16,16 +15,16 @@ LandScape
 ==============
 */
 
-ULandScape::ULandScape()
+LandScape::LandScape()
 {
 }
 
-ULandScape::~ULandScape()
+LandScape::~LandScape()
 {
 	CleanUp();
 }
 
-AkBool ULandScape::Initialize(UApplication* pApp, const wchar_t* wcRawSetUpFilename)
+AkBool LandScape::Initialize(Application* pApp, const wchar_t* wcRawSetUpFilename)
 {
 	_pApp = pApp;
 
@@ -210,7 +209,7 @@ AkBool ULandScape::Initialize(UApplication* pApp, const wchar_t* wcRawSetUpFilen
 	return AK_TRUE;
 }
 
-void ULandScape::Update(const AkF32 fDeltaTime)
+void LandScape::Update(const AkF32 fDeltaTime)
 {
 	for (AkU32 i = 0; i < (AkU32)GAME_OBJECT_GROUP_TYPE::GAME_OBJ_GROUP_TYPE_COUNT; i++)
 	{
@@ -223,19 +222,19 @@ void ULandScape::Update(const AkF32 fDeltaTime)
 	}
 }
 
-void ULandScape::Render()
+void LandScape::Render()
 {
 	_pRenderer->RenderBasicMeshObject(_pMeshObj, &_mWorld);
 }
 
-MeshData_t* ULandScape::GetMeshData(AkU32* pMeshDataNum)
+MeshData_t* LandScape::GetMeshData(AkU32* pMeshDataNum)
 {
 	*pMeshDataNum = _uMeshDataNum;
 
 	return _pMeshData;
 }
 
-void ULandScape::CleanUp()
+void LandScape::CleanUp()
 {
 	if (_pHeightMap)
 	{
@@ -258,7 +257,7 @@ void ULandScape::CleanUp()
 	}
 }
 
-AkBool ULandScape::LoadSetupFile(const wchar_t* wcRawSetUpFilename)
+AkBool LandScape::LoadSetupFile(const wchar_t* wcRawSetUpFilename)
 {
 	using namespace std;
 
@@ -342,7 +341,7 @@ AkBool ULandScape::LoadSetupFile(const wchar_t* wcRawSetUpFilename)
 	return AK_TRUE;
 }
 
-AkBool ULandScape::LoadRawHeightMap()
+AkBool LandScape::LoadRawHeightMap()
 {
 	// 높이 맵 데이터를 보관할 플로트 배열을 만듭니다.
 	_pHeightMap = new AkF32[_iLandScapeWidth * _iLandScapeHeight];
@@ -403,10 +402,10 @@ AkBool ULandScape::LoadRawHeightMap()
 	return true;
 }
 
-void ULandScape::UpdateGroupObject(GAME_OBJECT_GROUP_TYPE eType)
+void LandScape::UpdateGroupObject(GAME_OBJECT_GROUP_TYPE eType)
 {
-	USceneManager* pSceneManger = _pApp->GetSceneManager();
-	USceneInGame* pSceneInGame = (USceneInGame*)pSceneManger->GetCurrentScene();
+	SceneManager* pSceneManger = _pApp->GetSceneManager();
+	UInGameScene* pSceneInGame = (UInGameScene*)pSceneManger->GetCurrentScene();
 
 	GameObjContainer_t* pGameObjContainer = pSceneInGame->GetGroupObject(eType);
 	if (!pGameObjContainer)
@@ -478,10 +477,10 @@ void ULandScape::UpdateGroupObject(GAME_OBJECT_GROUP_TYPE eType)
 	}
 }
 
-void ULandScape::ComputeNoraml()
+void LandScape::ComputeNoraml()
 {
 }
 
-void ULandScape::ComputeTangent()
+void LandScape::ComputeTangent()
 {
 }

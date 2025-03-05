@@ -2,22 +2,22 @@
 #include "Application.h"
 #include "Timer.h"
 #include "GameInput.h"
-#include "SceneInGame.h"
-#include "GeometryGenerator.h"
 #include "CollisionManager.h"
 #include "SceneManager.h"
 #include "EditorManager.h"
-#include "AssetManager.h"
-#include "Animation.h"
-#include "EventManager.h"
-#include "ModelManager.h"
+#include "EventHandler.h"
 #include "UIManager.h"
-#include "Editor.h"
 #include "Camera.h"
 #include "TextUI.h"
 #include "PanelUI.h"
 #include "BtnUI.h"
 #include "InputUI.h"
+
+#include "LoadingScene.h"
+#include "InGameScene.h"
+
+#include "ModelEditor.h"
+#include "MapEditor.h"
 
 #include "Sound.h"
 
@@ -27,16 +27,16 @@ Application
 ===============
 */
 
-UApplication::UApplication()
+Application::Application()
 {
 }
 
-UApplication::~UApplication()
+Application::~Application()
 {
 	CleanUp();
 }
 
-AkBool UApplication::InitApplication(HWND hWnd, AkBool bEnableDebugLayer, AkBool bEnableGBV)
+AkBool Application::InitApplication(AkBool bEnableDebugLayer, AkBool bEnableGBV)
 {
 	srand((AkU32)time(nullptr));
 
@@ -63,229 +63,191 @@ AkBool UApplication::InitApplication(HWND hWnd, AkBool bEnableDebugLayer, AkBool
 	wchar_t wcErrorText[128] = {};
 	AkU32 uErrorCode = 0;
 
+	IRenderer* pRenderer = nullptr;
 	_hRendererDLL = ::LoadLibrary(wcRendererDLLFilename);
 	if (!_hRendererDLL)
 	{
 		uErrorCode = ::GetLastError();
 		swprintf_s(wcErrorText, L"Failed LoadLibrary[%s] - Error Code: %u \n", wcRendererDLLFilename, uErrorCode);
-		::MessageBox(hWnd, wcErrorText, L"Error", MB_OK);
+		::MessageBox(GhWnd, wcErrorText, L"Error", MB_OK);
 		__debugbreak();
 	}
 
 	DLL_CreateInstanceFuncPtr pDLL_CreateInstance = reinterpret_cast<DLL_CreateInstanceFuncPtr>(::GetProcAddress(_hRendererDLL, "DLL_CreateInstance"));
-	pDLL_CreateInstance(reinterpret_cast<void**>(&_pRenderer));
+	pDLL_CreateInstance(reinterpret_cast<void**>(&pRenderer));
 
-	if (!_pRenderer->Initialize(hWnd, bEnableDebugLayer, bEnableGBV))
+	if (!pRenderer->Initialize(GhWnd, bEnableDebugLayer, bEnableGBV))
 	{
 		__debugbreak();
 	}
 
-	_hWnd = hWnd;
+	GRenderer = pRenderer;
+	GRenderer->BindImGui((void**)&GImGui);
 
 	RECT tRect = {};
-	::GetClientRect(_hWnd, &tRect);
+	::GetClientRect(GhWnd, &tRect);
 	_uScreenWidth = tRect.right - tRect.left;
 	_uScreenHeight = tRect.bottom - tRect.top;
 
-	_pTimer = new UTimer;
-	if (!_pTimer->Initialize())
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
+	//////////////////////////////////////////////////////////
 
-	_pGameInput = new UGameInput;
-	if (!_pGameInput->Initialize(this))
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
+	//_pSysTextUI = new UTextUI;
+	//if (!_pSysTextUI->Initialize(this, 256, 32, L"Consolas", 10))
+	//{
+	//	__debugbreak();
+	//	return AK_FALSE;
+	//}
+	//_pSysTextUI->SetPosition(10, 10);
+	//_pSysTextUI->SetScale(1.0f, 1.0f);
+	//_pSysTextUI->SetFontColor(&_vSysFontColor);
 
-	_pCollisionManager = new UCollisionManager;
-	if (!_pCollisionManager->Initialize(this))
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
+	//_pUIManager->AddUI(_pSysTextUI, UI_OBJECT_TYPE::UI_OBJ_SYS_INFO_TEXT);
+	//_pUIManager->OnUI(UI_OBJECT_TYPE::UI_OBJ_SYS_INFO_TEXT);
 
-	_pAssetManager = new UAssetManager;
-	if (!_pAssetManager->Initialize(this))
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
+	//_pDynamicTextUI = new UInputUI;
+	//if (!_pDynamicTextUI->Initialize(this, 256, 32, L"Consolas", 10))
+	//{
+	//	__debugbreak();
+	//	return AK_FALSE;
+	//}
+	//_pDynamicTextUI->SetPosition(10, 500);
+	//_pDynamicTextUI->SetScale(1.0f, 1.0f);
+	//_pDynamicTextUI->SetFontColor(&_vDynamicTextFontColor);
+	//_pDynamicTextUI->SetDrawBackGround(AK_TRUE);
 
-	_pAnimator = new UAnimator;
-	if (!_pAnimator->Initialize(this))
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
+	//_pUIManager->AddUI(_pDynamicTextUI, UI_OBJECT_TYPE::UI_OBJ_CHAT_INPUT_TEXT);
+	//_pUIManager->OnUI(UI_OBJECT_TYPE::UI_OBJ_CHAT_INPUT_TEXT);
 
-	_pGameEventManager = new UGameEventManager;
-	if (!_pGameEventManager->Initialize(this))
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
+	//UTextUI* pStaticTextUI = new UTextUI;
+	//if (!pStaticTextUI->Initialize(this, 256, 32, L"Consolas", 10))
+	//{
+	//	__debugbreak();
+	//	return AK_FALSE;
+	//}
+	//pStaticTextUI->SetPosition(10, 32 + 10 + 10);
+	//pStaticTextUI->SetScale(1.0f, 1.0f);
+	//pStaticTextUI->SetFontColor(&_vSysFontColor);
+	//pStaticTextUI->WriteText(L"Test Static Text\n");
 
-	_pEditorEventManager = new UEditorEvenetManager;
-	if (!_pEditorEventManager->Initialize(this))
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
+	//_pUIManager->AddUI(pStaticTextUI, UI_OBJECT_TYPE::UI_OBJ_TEST_STATIC_TEXT);
 
-	_pModelManager = new UModelManager;
-	if (!_pModelManager->Initialize(this))
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
+	//UPanelUI* pTextureUI = new UPanelUI;
+	//if (!pTextureUI->Initialize(this, L"../../assets/ui_01.dds", 0, 0, 2545, 1867))
+	//{
+	//	__debugbreak();
+	//	return AK_FALSE;
+	//}
+	//pTextureUI->SetPosition(500, 10);
+	//pTextureUI->SetScale(0.1f, 0.2f);
+	//pTextureUI->SetDrawBackGround(AK_TRUE);
+	//pTextureUI->SetResolution((AkU32)(0.1f * 2545), (AkU32)(0.2f * 1867));
 
-	_pSceneManager = new USceneManager;
-	if (!_pSceneManager->Initialize(this))
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
+	//_pUIManager->AddUI(pTextureUI, UI_OBJECT_TYPE::UI_OBJ_EXIT);
 
-	_pEditorManager = new UEditorManager;
-	if (!_pEditorManager->Initialize(this))
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
+	//UBtnUI* pBtnUI = new UBtnUI;
+	//if (!pBtnUI->Initialize(this, L"../../assets/Exit_Btn.dds", 0, 0, 225, 49))
+	//{
+	//	__debugbreak();
+	//	return AK_FALSE;
+	//}
+	//pBtnUI->SetRelativePosition(10, 10);
+	//pBtnUI->SetScale(1.0f, 1.0f);
+	//pBtnUI->SetDrawBackGround(AK_TRUE);
+	//pBtnUI->SetResolution(225, 49);
+	//pBtnUI->SetClickFunc(&UApplication::ExitGame);
 
-	_pUIManager = new UUIManager;
-	if (!_pUIManager->Initialize(this))
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
+	//pTextureUI->AddChildUI(pBtnUI);
 
-	/////////////////////////////////////////////////////////////
-	_pSoundManager = new USoundManager;
-	if (!_pSoundManager->Initialize())
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
+	// Common Sprite and Font.
+	GCommonSprite = GRenderer->CreateSpriteObject();
+	GCommonFont = GRenderer->CreateFontObject(L"Consolas", 12);
 
-	_pTestSound = _pSoundManager->LoadSound("Fire_Continue.mp3");
-	/////////////////////////////////////////////////////////////
-
-	_pSysTextUI = new UTextUI;
-	if (!_pSysTextUI->Initialize(this, 256, 32, L"Consolas", 10))
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
-	_pSysTextUI->SetPosition(10, 10);
-	_pSysTextUI->SetScale(1.0f, 1.0f);
-	_pSysTextUI->SetFontColor(&_vSysFontColor);
-
-	_pUIManager->AddUI(_pSysTextUI, UI_OBJECT_TYPE::UI_OBJ_SYS_INFO_TEXT);
-	_pUIManager->OnUI(UI_OBJECT_TYPE::UI_OBJ_SYS_INFO_TEXT);
-
-	_pDynamicTextUI = new UInputUI;
-	if (!_pDynamicTextUI->Initialize(this, 256, 32, L"Consolas", 10))
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
-	_pDynamicTextUI->SetPosition(10, 500);
-	_pDynamicTextUI->SetScale(1.0f, 1.0f);
-	_pDynamicTextUI->SetFontColor(&_vDynamicTextFontColor);
-	_pDynamicTextUI->SetDrawBackGround(AK_TRUE);
-
-	_pUIManager->AddUI(_pDynamicTextUI, UI_OBJECT_TYPE::UI_OBJ_CHAT_INPUT_TEXT);
-	_pUIManager->OnUI(UI_OBJECT_TYPE::UI_OBJ_CHAT_INPUT_TEXT);
-
-	UTextUI* pStaticTextUI = new UTextUI;
-	if (!pStaticTextUI->Initialize(this, 256, 32, L"Consolas", 10))
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
-	pStaticTextUI->SetPosition(10, 32 + 10 + 10);
-	pStaticTextUI->SetScale(1.0f, 1.0f);
-	pStaticTextUI->SetFontColor(&_vSysFontColor);
-	pStaticTextUI->WriteText(L"Test Static Text\n");
-
-	_pUIManager->AddUI(pStaticTextUI, UI_OBJECT_TYPE::UI_OBJ_TEST_STATIC_TEXT);
-
-	UPanelUI* pTextureUI = new UPanelUI;
-	if (!pTextureUI->Initialize(this, L"../../assets/ui_01.dds", 0, 0, 2545, 1867))
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
-	pTextureUI->SetPosition(500, 10);
-	pTextureUI->SetScale(0.1f, 0.2f);
-	pTextureUI->SetDrawBackGround(AK_TRUE);
-	pTextureUI->SetResolution((AkU32)(0.1f * 2545), (AkU32)(0.2f * 1867));
-
-	_pUIManager->AddUI(pTextureUI, UI_OBJECT_TYPE::UI_OBJ_EXIT);
-
-	UBtnUI* pBtnUI = new UBtnUI;
-	if (!pBtnUI->Initialize(this, L"../../assets/Exit_Btn.dds", 0, 0, 225, 49))
-	{
-		__debugbreak();
-		return AK_FALSE;
-	}
-	pBtnUI->SetRelativePosition(10, 10);
-	pBtnUI->SetScale(1.0f, 1.0f);
-	pBtnUI->SetDrawBackGround(AK_TRUE);
-	pBtnUI->SetResolution(225, 49);
-	pBtnUI->SetClickFunc(&UApplication::ExitGame);
-
-	pTextureUI->AddChildUI(pBtnUI);
+	// Create texture for system info sprite.
+	_uTextTextureWidth = 516;
+	_uTextTextureHeight = 32;
+	_pTextTextureImage = (AkU8*)malloc(_uTextTextureWidth * _uTextTextureHeight * 4);
+	_pSysTextureHandle = GRenderer->CreateDynamicTexture(_uTextTextureWidth, _uTextTextureHeight);
+	memset(_pTextTextureImage, 0, _uTextTextureWidth * _uTextTextureHeight * 4);
 
 	// Reset timer.
-	_pTimer->Reset();
+	GTimer->Reset();
+
+	// Init Scene.
+	InitScene();
+
+	// Init Editor.
+	InitEditor();
 
 	return AK_TRUE;
 }
 
-void UApplication::RunApplication()
+AkBool Application::InitScene()
 {
-	_pTimer->Tick();
+	GSceneManager->AddScene(SCENE_TYPE::SCENE_TYPE_LOADING, new ULoadingScene());
+	GSceneManager->AddScene(SCENE_TYPE::SCENE_TYPE_INGANE, new UInGameScene());
 
-	Update(_pTimer);
+	GSceneManager->BindCurrentScene(SCENE_TYPE::SCENE_TYPE_LOADING)->BeginScene();
 
-	_pRenderer->UpdateCascadeOrthoProjMatrix();
+	return AK_TRUE;
+}
+
+AkBool Application::InitEditor()
+{
+	GEditorManager->AddEditor(EDITOR_TYPE::EDITOR_TYPE_MODEL, new ModelEditor());
+	GEditorManager->AddEditor(EDITOR_TYPE::EDITOR_TYPE_MAP, new MapEditor());
+
+	return AK_TRUE;
+}
+
+void Application::RunApplication()
+{
+	GTimer->Tick();
+
+	// Start the Dear ImGui frame
+	ImGui_ImplDX12_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+	ImGuiIO& io = ImGui::GetIO();
+
+	Update();
+
+	GRenderer->UpdateCascadeOrthoProjMatrix();
 
 	// Shadow Pass.
 	for (AkU32 i = 0; i < 5; i++)
 	{
-		_pRenderer->BeginCasterRenderPreparation();
-		_pSceneManager->RenderShadowPass();
-		_pRenderer->EndCasterRenderPreparation();
+		GRenderer->BeginCasterRenderPreparation();
+
+		GSceneManager->RenderShadow();
+
+		GRenderer->EndCasterRenderPreparation();
+
 	}
 
 	// Begin render.
-	_pRenderer->BeginRender();
+	GRenderer->BeginRender();
 
-	Render(_pTimer);
+	Render();
+
+	ImGui::Render();
 
 	// End render.
-	_pRenderer->EndRender();
-	_pRenderer->Present();
+	GRenderer->EndRender();
+	GRenderer->Present();
+
+	// Evcute the event handler.
+	GEventHandler->Excute();
 
 	CalculateFrameRate();
-
-	_pGameEventManager->Reset();
-	_pEditorEventManager->Reset();
 }
 
-AkBool UApplication::UpdateWindowSize(AkU32 uScreenWidth, AkU32 uScreenHeight)
+AkBool Application::UpdateWindowSize(AkU32 uScreenWidth, AkU32 uScreenHeight)
 {
 	AkBool bResult = AK_FALSE;
 
-	if (_pRenderer)
+	if (GRenderer)
 	{
-		bResult = _pRenderer->UpdateWindowSize(uScreenWidth, uScreenHeight);
+		bResult = GRenderer->UpdateWindowSize(uScreenWidth, uScreenHeight);
 		_uScreenWidth = uScreenWidth;
 		_uScreenHeight = uScreenHeight;
 	}
@@ -293,79 +255,40 @@ AkBool UApplication::UpdateWindowSize(AkU32 uScreenWidth, AkU32 uScreenHeight)
 	return bResult;
 }
 
-void UApplication::SetVSync(AkBool bUseVSync)
+void Application::SetVSync(AkBool bUseVSync)
 {
 	_bUseVSync = bUseVSync;
 
-	_pRenderer->SetVSync(_bUseVSync);
+	GRenderer->SetVSync(_bUseVSync);
 }
 
-void UApplication::CleanUp()
+void Application::CleanUp()
 {
-	if (_pSoundManager)
+	if (_pTextTextureImage)
 	{
-		delete _pSoundManager;
-		_pSoundManager = nullptr;
+		free(_pTextTextureImage);
+		_pTextTextureImage = nullptr;
 	}
-	if (_pUIManager)
+	if (_pSysTextureHandle)
 	{
-		delete _pUIManager;
-		_pUIManager = nullptr;
+		GRenderer->DestroyTexture(_pSysTextureHandle);
+		_pSysTextureHandle = nullptr;
 	}
-	if (_pEditorEventManager)
+	if (GCommonFont)
 	{
-		delete _pEditorEventManager;
-		_pEditorEventManager = nullptr;
+		GRenderer->DestroyFontObject(GCommonFont);
+		GCommonFont = nullptr;
 	}
-	if (_pGameEventManager)
+	if (GCommonSprite)
 	{
-		delete _pGameEventManager;
-		_pGameEventManager = nullptr;
+		GCommonSprite->Release();
+		GCommonSprite = nullptr;
 	}
-	if (_pEditorManager)
+	if (GRenderer)
 	{
-		delete _pEditorManager;
-		_pEditorManager = nullptr;
-	}
-	if (_pSceneManager)
-	{
-		delete _pSceneManager;
-		_pSceneManager = nullptr;
-	}
-	if (_pModelManager)
-	{
-		delete _pModelManager;
-		_pModelManager = nullptr;
-	}
-	if (_pAnimator)
-	{
-		delete _pAnimator;
-		_pAnimator = nullptr;
-	}
-	if (_pAssetManager)
-	{
-		delete _pAssetManager;
-		_pAssetManager = nullptr;
-	}
-	if (_pCollisionManager)
-	{
-		delete _pCollisionManager;
-		_pCollisionManager = nullptr;
-	}
-	if (_pGameInput)
-	{
-		delete _pGameInput;
-		_pGameInput = nullptr;
-	}
-	if (_pTimer)
-	{
-		delete _pTimer;
-		_pTimer = nullptr;
-	}
-	if (_pRenderer)
-	{
-		_pRenderer->Release();
-		_pRenderer = nullptr;
+		GRenderer->UnBindImGui();
+		GRenderer->Release();
+		GRenderer = nullptr;
 	}
 	if (_hRendererDLL)
 	{
@@ -376,12 +299,10 @@ void UApplication::CleanUp()
 	}
 }
 
-void UApplication::Update(const UTimer* pTimer)
+void Application::Update()
 {
 	static AkF32 fTimeElapsed = 0.0f;
-	AkF32 fDeltaTime = pTimer->GetDeltaTime();
-
-	fTimeElapsed += fDeltaTime;
+	fTimeElapsed += DT;
 
 	// Not Vsync => 60fps 고정을 위한 처리
 	//if (fTimeElapsed < 0.016f)
@@ -390,108 +311,105 @@ void UApplication::Update(const UTimer* pTimer)
 	//}
 
 	// Update game input.
-	_pGameInput->Update();
+	GGameInput->Update();
 
 	// Update mouse ndc pos.
 	UpdateMouseNdcPos();
 
-	if (_pGameInput->KeyFirstDown(KEY_INPUT_RSHIFT))
-	{
-		if (_bUpdatedFirst)
-		{
-			_bEnableEditor = AK_TRUE;
+	// Update env.
+	UpdateEnv();
 
-			_pEditorManager->GetCurrentEditor()->BeginEditor();
-		}
-		else
-		{
-			EDITOR_TYPE eEditorType = (EDITOR_TYPE)_uEditorType;
+	// Update Scene.
+	GSceneManager->Update();
 
-			if (EDITOR_TYPE::EDITOR_TYPE_COUNT == eEditorType)
-			{
-				_bEnableEditor = AK_FALSE;
+	// Final Update Scene.
+	GSceneManager->FinalUpdate();
 
-				// 종료 타입 이전 단계의 에티터 타입을 종료
-				AkU32 uBeforeExitType = (AkU32)EDITOR_TYPE::EDITOR_TYPE_COUNT - 1;
+	// Update Editor.
+	GEditorManager->Update();
 
-				_pEditorManager->GetEditor((EDITOR_TYPE)uBeforeExitType)->EndEditor();
-			}
-			else
-			{
-				_bEnableEditor = AK_TRUE;
-
-				EditorEventHandle_t tEditorEventHandle = {};
-				tEditorEventHandle.eEventType = EDITOR_EVENT_TYPE::EDITOR_EVENT_TYPE_EDITOR_CHANGE;
-				tEditorEventHandle.tEditorChangeParam.eAfter = eEditorType;
-
-				_pEditorEventManager->AddEvent(&tEditorEventHandle);
-
-				// _pEditorManager->ChangeEditor(eEditorType);
-			}
-		}
-
-		_uEditorType++;
-		_uEditorType %= ((AkU32)EDITOR_TYPE::EDITOR_TYPE_COUNT + 1);
-
-		_bUpdatedFirst = AK_FALSE;
-	}
-
-	if (_pGameInput->KeyFirstDown(KEY_INPUT_F5))
-	{
-		_bUseVSync = !_bUseVSync;
-
-		SetVSync(_bUseVSync);
-	}
-
-	// TODO!!
-	// 임시로 F1 버튼으로 설정.
-	if (_pGameInput->KeyFirstDown(KEY_INPUT_F1))
-	{
-		_pUIManager->ToggleUI(UI_OBJECT_TYPE::UI_OBJ_EXIT);
-	}
-
-	if (_bEnableEditor)
-	{
-		_pEditorManager->GetCurrentEditor()->Update(fDeltaTime);
-	}
-
-	// Update Scene list.
-	_pSceneManager->Update(fDeltaTime);
-
-	// Final Update Scene list.
-	_pSceneManager->FinalUpdate(fDeltaTime);
+	// Final Update Editor.
+	GEditorManager->FinalUpdate();
 
 	// Update Collision manager.
-	_pCollisionManager->Update();
+	GCollisionManager->Update();
 
 	// Update status text
 	UpdateText();
 
 	// Update UI Manager.
-	_pUIManager->Update(fDeltaTime);
+	GUIManager->Update();
 
-	// Excute event manager.
-	_pGameEventManager->Excute(fDeltaTime);
-	_pEditorEventManager->Excute(fDeltaTime);
+	// Update sound manager.
+	GSoundManager->Update();
 
 	// 게임 종료.
-	if (_pGameInput->KeyFirstDown(KEY_INPUT_ESCAPE))
+	if (GGameInput->KeyFirstDown(KEY_INPUT_ESCAPE))
 	{
 		ExitGame();
 	}
 
-	// Update sound manager.
-	_pSoundManager->Update(fDeltaTime);
-	// _pTestSound->Play(AK_TRUE);
-
 	fTimeElapsed = 0.0f;
 }
 
-void UApplication::UpdateMouseNdcPos()
+void Application::UpdateEnv()
+{
+	// VSync.
+	if (GGameInput->KeyFirstDown(KEY_INPUT_F10))
+	{
+		_bUseVSync = !_bUseVSync;
+		SetVSync(_bUseVSync);
+	}
+
+	// Change Scene To Model Editor.
+	if (GGameInput->KeyFirstDown(KEY_INPUT_F2) && !GEditorManager->GetCurrentEditor())
+	{
+		EventHandle_t tEvent = {};
+		tEvent.eEventType = EVENT_TYPE::EVENT_TYPE_SCENE_TO_MODEL_EDITOR_CHANGE;
+		tEvent.tSceneEditorChangeParam.eScene = GSceneManager->GetCurrentSceneType();
+		tEvent.tSceneEditorChangeParam.eEditor = EDITOR_TYPE::EDITOR_TYPE_MODEL;
+		GEventHandler->AddEvent(&tEvent);
+	}
+
+	// Change Scene To Map Editor.
+	if (GGameInput->KeyFirstDown(KEY_INPUT_F3) && !GEditorManager->GetCurrentEditor())
+	{
+		EventHandle_t tEvent = {};
+		tEvent.eEventType = EVENT_TYPE::EVENT_TYPE_SCENE_TO_MAP_EDITOR_CHANGE;
+		tEvent.tSceneEditorChangeParam.eScene = GSceneManager->GetCurrentSceneType();
+		tEvent.tSceneEditorChangeParam.eEditor = EDITOR_TYPE::EDITOR_TYPE_MAP;
+		GEventHandler->AddEvent(&tEvent);
+	}
+
+	// Change Editor To Scene
+	if (GGameInput->KeyFirstDown(KEY_INPUT_F4))
+	{
+		EventHandle_t tEvent = {};
+		tEvent.eEventType = EVENT_TYPE::EVENT_TYPE_EDITOR_TO_SCENE_CHANGE;
+		tEvent.tSceneEditorChangeParam.eScene = GSceneManager->GetCurrentSceneType();
+		tEvent.tSceneEditorChangeParam.eEditor = GEditorManager->GetCurrentEditorType();
+		GEventHandler->AddEvent(&tEvent);
+	}
+
+	// Change Editor.
+	if (GGameInput->KeyFirstDown(KEY_INPUT_F5) && GEditorManager->GetCurrentEditor())
+	{
+		AkU32 uTypeIndex = (AkU32)GEditorManager->GetCurrentEditorType() + 1;
+		uTypeIndex %= (AkU32)EDITOR_TYPE::EDITOR_TYPE_COUNT;
+
+		EventHandle_t tEvent = {};
+		tEvent.eEventType = EVENT_TYPE::EVENT_TYPE_EDITOR_CHANGE;
+		tEvent.tEditorChangeParam.eBefore = GEditorManager->GetCurrentEditorType();
+		tEvent.tEditorChangeParam.eAfter = (EDITOR_TYPE)uTypeIndex;
+		GEventHandler->AddEvent(&tEvent);
+	}
+}
+
+void Application::UpdateMouseNdcPos()
 {
 	// AkI32 iMousePosX = _pGameInput->GetMouseX();
-	AkI32 iMousePosX = _pGameInput->GetReleasedMouseX();
-	AkI32 iMousePosY = _pGameInput->GetMouseY();
+	AkI32 iMousePosX = GGameInput->GetAccumulatedMouseX();
+	AkI32 iMousePosY = GGameInput->GetMouseY();
 
 	_fNdcX = (AkF32)iMousePosX / _uScreenWidth * 2.0f - 1.0f;
 	_fNdcY = (AkF32)iMousePosY / _uScreenHeight * -2.0f + 1.0f;
@@ -500,45 +418,45 @@ void UApplication::UpdateMouseNdcPos()
 	_fClampNdcY = Clamp(_fNdcY, -1.0f, 1.0f);
 }
 
-void UApplication::UpdateText()
+void Application::UpdateText()
 {
-	USceneInGame* pSceneInGame = (USceneInGame*)_pSceneManager->GetScene(GAME_SCENE_TYPE::SCENE_TYPE_INGANE);
+	UInGameScene* pSceneInGame = (UInGameScene*)GSceneManager->GetScene(SCENE_TYPE::SCENE_TYPE_INGANE);
 
 	AkI32 iTextWidth = 0;
 	AkI32 iTextHeight = 0;
 	wchar_t wcText[128] = {};
-	AkU32 uTxtLen = swprintf_s(wcText, L"fps:%.2lf tri:%u obj:%u/%u\n", _fFps, pSceneInGame->GetTriangleCount(), pSceneInGame->GetRenderMapObjectCount(), pSceneInGame->GetMapObjectCount());
+	AkU32 uTxtLen = swprintf_s(wcText, L"fps:%.2lf\n", _fFps);
 
-	_pSysTextUI->WriteText(wcText);
+	if (!wcscmp(_wcText, wcText))
+	{
+		GRenderer->WriteTextToBitmap(_pTextTextureImage, _uTextTextureWidth, _uTextTextureHeight, _uTextTextureWidth * 4, &iTextWidth, &iTextHeight, GCommonFont, _wcText, uTxtLen);
+		GRenderer->UpdateTextureWidthImage(_pSysTextureHandle, _pTextTextureImage, _uTextTextureWidth, _uTextTextureHeight);
+		wcscpy_s(_wcText, wcText);
+	}
 }
 
-void UApplication::Render(const UTimer* pTimer)
+void Application::Render()
 {
-	// Render editor.
-	if (_bEnableEditor)
-	{
-		_pEditorManager->GetCurrentEditor()->Render();
-	}
-
 	// Render Scene list.
-	_pSceneManager->Render();
+	GSceneManager->Render();
 
 	// Render UI
-	_pUIManager->Render();
-
-	if (_bESC)
-	{
-	}
+	GUIManager->Render();
 }
 
-void UApplication::CalculateFrameRate()
+void Application::RenderText()
+{
+	GRenderer->RenderSpriteWithTex(GCommonSprite, 10, 10, 1.0f, 1.0f, nullptr, 0.0f, _pSysTextureHandle);
+}
+
+void Application::CalculateFrameRate()
 {
 	static AkU32 uFrameCount = 0;
 	static AkF32 fTimeElapsed = 0.0f;
 
 	uFrameCount++;
 
-	if (_pTimer->GetTotalTime() - fTimeElapsed >= 1.0f)
+	if (GTimer->GetTotalTime() - fTimeElapsed >= 1.0f)
 	{
 		AkF32 fFps = static_cast<AkF32>(uFrameCount);
 
@@ -549,13 +467,8 @@ void UApplication::CalculateFrameRate()
 	}
 }
 
-void UApplication::ExitGame()
+void Application::ExitGame()
 {
-	if (_bEnableEditor)
-	{
-		_pEditorManager->GetCurrentEditor()->EndEditor();
-	}
-
 	::PostQuitMessage(996);
 }
 

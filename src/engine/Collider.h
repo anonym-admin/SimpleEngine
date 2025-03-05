@@ -1,67 +1,40 @@
 #pragma once
 
-enum class COLLIDER_SHAPE_TYPE
-{
-	COLLIDER_SHAPE_SPHERE,
-	COLLIDER_SHAPE_BOX,
-	COLLIDER_SHAPE_COUNT,
-};
+class Actor;
+class Transform;
 
-/*
-===========
-Collider
-===========
-*/
-
-class UActor;
-class UApplication;
-
-class UCollider
+class Collider
 {
 public:
-	static const AkU32 MAX_SPHERE_GROUP_SHAPE_COUNT = 3;
+	static AkBool DRAW_COLLIDER;
 
-	UCollider();
-	~UCollider();
+	Collider();
+	~Collider();
 
-	AkBool Initialize(UActor* pOwner, IRenderer* pRenderer);
-	void Update(const AkF32 fDeltaTime);
+	AkBool Initialize();
+	void Update();
 	void Render();
 
+	void SetOwner(Actor* pOwner) { _pOwner = pOwner; }
+	COLLIDER_TYPE GetType() { return _eType; }
 	AkU32 GetID() { return _uID; }
-	UActor* GetOwner() { return _pOwner; }
-	AkBox_t* GetBoundingBox() { return _pBox; }
-	AkSphere_t* GetBoundingSphere() { return _pSphere; }
-	AkTriangle_t* GetTriangle() { return _pTriangle; }
-	COLLIDER_SHAPE_TYPE GetShapeType() { return _eShapeType; }
 
-	void CreateBoundingBox(const Vector3* pMin, const Vector3* pMax);
-	void CreateBoundingSphere(AkF32 fRadius, const Vector3* pCenter);
-	void CreateTriangle(const Vector3* pV0, const Vector3* pV1, const Vector3* pV2);
-	void DestroyBoundingBox();
-	void DestroyBoundingSphere();
-	void DestroyTriangle();
-
-	virtual void OnCollision(UCollider* pCollider);
-	virtual void OnCollisionEnter(UCollider* pCollider);
-	virtual void OnCollisionExit(UCollider* pCollider);
+	virtual void OnCollisionEnter(Collider* pOther) = 0;
+	virtual void OnCollision(Collider* pOther) = 0;
+	virtual void OnCollisionExit(Collider* pOther) = 0;
 
 private:
 	void CleanUp();
 
-private:
-	static AkU32 sm_uID;
+protected:
+	static AkU32 s_uID;
 	AkU32 _uID = 0;
-	UActor* _pOwner = nullptr;
-	IRenderer* _pRenderer = nullptr;
-	IMeshObject* _pMeshObj = nullptr;
-	Matrix _mWorldRow = Matrix();
-	AkBox_t* _pBox = nullptr;
-	AkSphere_t* _pSphere = nullptr;
-	AkTriangle_t* _pTriangle = nullptr;
-	COLLIDER_SHAPE_TYPE _eShapeType = {};
+	Actor* _pOwner = nullptr;
+	COLLIDER_TYPE _eType = {};
 
-	// For Frustum culling with kd-tree.
-public:
-	AkBool* _pDraw = nullptr;
+	IMeshObject* _pMeshObj = nullptr;
+	Transform* _pTransform = nullptr;
+
+	Vector3 _vColor = Vector3(0.0f, 1.0f, 0.0f);
 };
+

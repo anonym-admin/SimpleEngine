@@ -8,15 +8,15 @@ LandScape
 
 // #define REGACY
 
-class UApplication;
+class Application;
 
-class ULandScape
+class LandScape
 {
 public:
-	ULandScape();
-	~ULandScape();
+	LandScape();
+	~LandScape();
 
-	AkBool Initialize(UApplication* pApp, const wchar_t* wcRawSetUpFilename);
+	AkBool Initialize(Application* pApp, const wchar_t* wcRawSetUpFilename);
 	void Update(const AkF32 fDeltaTime);
 	void Render();
 
@@ -37,7 +37,7 @@ private:
 	void ComputeTangent();
 
 private:
-	UApplication* _pApp = nullptr;
+	Application* _pApp = nullptr;
 	IRenderer* _pRenderer = nullptr;
 	IMeshObject* _pMeshObj = nullptr;
 	Matrix _mWorld = Matrix();

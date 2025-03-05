@@ -1,33 +1,21 @@
 #pragma once
 
-class UApplication;
-class UEditorCamera;
-
-class UEditor
+class Editor
 {
 public:
-	UEditor();
-	virtual ~UEditor();
-		
-	virtual AkBool Initialize(UApplication* pApp) = 0;
-	virtual void BeginEditor() = 0;
-	virtual void EndEditor() = 0;
-	virtual void Update(const AkF32 fDeltaTime) = 0;
+	Editor() = default;
+	virtual ~Editor() = default;
+
+	virtual AkBool BeginEditor() = 0;
+	virtual AkBool EndEditor() = 0;
+	virtual void Update() = 0;
+	virtual void FinalUpdate() = 0;
 	virtual void Render() = 0;
+	virtual void RenderShadow() = 0;
 
-	UEditorCamera* GetEditorCamera() { return _pEditorCam; }
-	UApplication* GetApp() { return _pApp; }
+	void SetName(const wchar_t* wcName) { Name = wcName; }
 
-protected:
-	void CreateEditorCamera();
-	void DestroyEditorCamera();
-
-private:
-	void CleanUp();
-
-private:
-	UApplication* _pApp = nullptr;
-	IRenderer* _pRenderer = nullptr;
-	UEditorCamera* _pEditorCam = nullptr;
+public:
+	const wchar_t* Name;
 };
 

@@ -3,7 +3,8 @@
 #include "ModelImporter.h"
 #include "Application.h"
 #include "SceneManager.h"
-#include "SceneLoading.h"
+#include "LoadingScene.h"
+#include "Timer.h"
 
 BoneAnimation_t::BoneAnimation_t()
 {
@@ -152,19 +153,19 @@ Animator
 ==============
 */
 
-HashTable_t* UAnimation::_pAnimationClipTable;
-AkU32 UAnimation::_uInitRefCount;
+HashTable_t* Animation::_pAnimationClipTable;
+AkU32 Animation::_uInitRefCount;
 
-UAnimation::UAnimation()
+Animation::Animation()
 {
 }
 
-UAnimation::~UAnimation()
+Animation::~Animation()
 {
 	CleanUp();
 }
 
-AkBool UAnimation::Initialize(AkU32 uMaxClipNum)
+AkBool Animation::Initialize(AkU32 uMaxClipNum)
 {
 	// Animation clip 은 공유하는 구조.
 	if (!_uInitRefCount)
@@ -178,12 +179,12 @@ AkBool UAnimation::Initialize(AkU32 uMaxClipNum)
 	return AK_TRUE;
 }
 
-void UAnimation::AddRef()
+void Animation::AddRef()
 {
 	AkU32 uRefCount = ++_uRefCount;
 }
 
-void UAnimation::Release()
+void Animation::Release()
 {
 	if (_pFinalTransforms)
 	{
@@ -204,7 +205,7 @@ void UAnimation::Release()
 	}
 }
 
-void UAnimation::GetFinalTransform(const wchar_t* wcClipName, const AkF32 fTimePos, Matrix* pFinalTransform, Matrix* pRootTransform, AkBool bInPlace)
+void Animation::GetFinalTransform(const wchar_t* wcClipName, const AkF32 fTimePos, Matrix* pFinalTransform, Matrix* pRootTransform, AkBool bInPlace)
 {
 	Matrix* pToParentTransform = new Matrix[96];
 
@@ -257,7 +258,7 @@ void UAnimation::GetFinalTransform(const wchar_t* wcClipName, const AkF32 fTimeP
 	pToParentTransform = nullptr;
 }
 
-AkU32 UAnimation::GetClipTickPerSecond(const wchar_t* wcClipName)
+AkU32 Animation::GetClipTickPerSecond(const wchar_t* wcClipName)
 {
 	AnimationClip_t* pAnimationClip = nullptr;
 	AkU32 uKeySize = (AkU32)wcslen(wcClipName) * sizeof(wchar_t);
@@ -269,7 +270,7 @@ AkU32 UAnimation::GetClipTickPerSecond(const wchar_t* wcClipName)
 	return pAnimationClip->uTickPerSecond;
 }
 
-AkU32 UAnimation::GetClipDuration(const wchar_t* wcClipName)
+AkU32 Animation::GetClipDuration(const wchar_t* wcClipName)
 {
 	AnimationClip_t* pAnimationClip = nullptr;
 	AkU32 uKeySize = (AkU32)wcslen(wcClipName) * sizeof(wchar_t);
@@ -281,7 +282,7 @@ AkU32 UAnimation::GetClipDuration(const wchar_t* wcClipName)
 	return pAnimationClip->uDuration;
 }
 
-AkF32 UAnimation::GetClipStartTime(const wchar_t* wcClipName)
+AkF32 Animation::GetClipStartTime(const wchar_t* wcClipName)
 {
 	AnimationClip_t* pAnimationClip = nullptr;
 	AkU32 uKeySize = (AkU32)wcslen(wcClipName) * sizeof(wchar_t);
@@ -293,7 +294,7 @@ AkF32 UAnimation::GetClipStartTime(const wchar_t* wcClipName)
 	return pAnimationClip->GetClipStartTime();
 }
 
-AkF32 UAnimation::GetClipEndTime(const wchar_t* wcClipName)
+AkF32 Animation::GetClipEndTime(const wchar_t* wcClipName)
 {
 	AnimationClip_t* pAnimationClip = nullptr;
 	AkU32 uKeySize = (AkU32)wcslen(wcClipName) * sizeof(wchar_t);
@@ -305,7 +306,7 @@ AkF32 UAnimation::GetClipEndTime(const wchar_t* wcClipName)
 	return pAnimationClip->GetClipEndTime();
 }
 
-AkF32 UAnimation::GetClipCurrentTime(const wchar_t* wcClipName)
+AkF32 Animation::GetClipCurrentTime(const wchar_t* wcClipName)
 {
 	AnimationClip_t* pAnimationClip = nullptr;
 	AkU32 uKeySize = (AkU32)wcslen(wcClipName) * sizeof(wchar_t);
@@ -317,14 +318,9 @@ AkF32 UAnimation::GetClipCurrentTime(const wchar_t* wcClipName)
 	return pAnimationClip->GetClipCurrentTime();
 }
 
-void UAnimation::SetDefaultMatrix(const Matrix* mDefaultMat)
+void Animation::SetDefaultMatrix(const Matrix* mDefaultMat)
 {
 	_mDefaultMatrix = *mDefaultMat;
-
-
-
-
-	// TODO!!
 
 	_pFinalTransforms = reinterpret_cast<Matrix*>(malloc(sizeof(Matrix) * 96));
 	memset(_pFinalTransforms, 0, sizeof(Matrix) * 96);
@@ -333,7 +329,7 @@ void UAnimation::SetDefaultMatrix(const Matrix* mDefaultMat)
 	memset(_pRootTransforms, 0, sizeof(Matrix) * 96);
 }
 
-void UAnimation::DestroyAnimationClip(const wchar_t* wcClipName)
+void Animation::DestroyAnimationClip(const wchar_t* wcClipName)
 {
 	AnimationClip_t* pAnimClip = nullptr;
 	AkU32 uKeyLength = (AkU32)wcslen(wcClipName) * sizeof(wchar_t);
@@ -352,14 +348,13 @@ void UAnimation::DestroyAnimationClip(const wchar_t* wcClipName)
 	}
 }
 
-AnimationClip_t* UAnimation::ReadFromAnimationFile(UApplication* pApp, const wchar_t* wcBasePath, const wchar_t* wcFilename)
+AnimationClip_t* Animation::ReadFromAnimationFile(const wchar_t* wcBasePath, const wchar_t* wcFilename)
 {
-	USceneManager* pSceneManager = pApp->GetSceneManager();
-	USceneLoading* pSceneLoading = (USceneLoading*)pSceneManager->GetCurrentScene();
+	ULoadingScene* pSceneLoading = (ULoadingScene*)GSceneManager->GetCurrentScene();
 
-	UModelImporter tModelImporter = { };
+	ModelImporter tModelImporter = { };
 
-	tModelImporter.LoadAnimation(pApp, wcBasePath, wcFilename, _uBoneNum);
+	tModelImporter.LoadAnimation(wcBasePath, wcFilename, _uBoneNum);
 
 	wchar_t wcFullPath[MAX_PATH] = {};
 	wcscpy_s(wcFullPath, wcBasePath);
@@ -374,7 +369,7 @@ AnimationClip_t* UAnimation::ReadFromAnimationFile(UApplication* pApp, const wch
 	return pAnimClip;
 }
 
-AkBool UAnimation::PlayAnimation(const AkF32 fDeltaTime, const wchar_t* wcAnimClipname, AkBool bInPlace)
+AkBool Animation::PlayAnimation(const wchar_t* wcAnimClipname, AkBool bInPlace)
 {
 	AkBool bIsEnd = AK_FALSE;
 
@@ -382,7 +377,7 @@ AkBool UAnimation::PlayAnimation(const AkF32 fDeltaTime, const wchar_t* wcAnimCl
 	AkU32 uDuration = GetClipDuration(wcAnimClipname);
 
 	AkF32 fAnimTime = GetClipCurrentTime(wcAnimClipname);
-	fAnimTime += (AkF32)uTickPerSecond * fDeltaTime;
+	fAnimTime += (AkF32)uTickPerSecond * DT;
 
 	if (fAnimTime >= GetClipEndTime(wcAnimClipname))
 	{
@@ -396,7 +391,7 @@ AkBool UAnimation::PlayAnimation(const AkF32 fDeltaTime, const wchar_t* wcAnimCl
 	return bIsEnd;
 }
 
-void UAnimation::SetClipCurrentTime(const wchar_t* wcClipName, AkF32 fCurTime)
+void Animation::SetClipCurrentTime(const wchar_t* wcClipName, AkF32 fCurTime)
 {
 	AnimationClip_t* pAnimationClip = nullptr;
 	AkU32 uKeySize = (AkU32)wcslen(wcClipName) * sizeof(wchar_t);
@@ -408,7 +403,7 @@ void UAnimation::SetClipCurrentTime(const wchar_t* wcClipName, AkF32 fCurTime)
 	pAnimationClip->SetClipCurrentTime(fCurTime);
 }
 
-void UAnimation::AddAnimationClip(AnimationClip_t* pAnimClip, const wchar_t* wcClipName)
+void Animation::AddAnimationClip(AnimationClip_t* pAnimClip, const wchar_t* wcClipName)
 {
 	AkU32 uClipNameByteSize = (AkU32)wcslen(wcClipName) * sizeof(wchar_t);
 
@@ -421,7 +416,7 @@ void UAnimation::AddAnimationClip(AnimationClip_t* pAnimClip, const wchar_t* wcC
 	pAnimClip->pSearchHandle = pSearchHandle;
 }
 
-void UAnimation::CleanUp()
+void Animation::CleanUp()
 {
 	if (_pBoneOffsetMatrixList)
 	{
@@ -442,118 +437,5 @@ void UAnimation::CleanUp()
 			HT_DestroyHashTable(_pAnimationClipTable);
 			_pAnimationClipTable = nullptr;
 		}
-	}
-}
-
-/*
-===============================
-Animation file path
-===============================
-*/
-
-const wchar_t* GMAE_ANIM_FILE_BASE_PATH = L"../../assets/model/";
-
-const wchar_t* GAME_ANIM_PLAYER_ANIM_FILE_NAME[] =
-{
-		L"SwatGuy_Idle.anim"	
-	,	L"SwatGuy_Walking.anim"	
-	,   L"SwatGuy_Run.anim"		
-	,   L"SwatGuy_Jump.anim"	
-	,   L"SwatGuy_RifleRun.anim"
-	,	L"SwatGuy_RifleWalking.anim"
-	,	L"SwatGuy_RifleIdle.anim"
-	,	L"SwatGuy_RifleRunFire.anim"
-	,	L"SwatGuy_RifleWalkFire.anim"
-	,	L"SwatGuy_RifleIdleFire.anim"
-};
-
-const wchar_t* GAME_ANIM_DANCER_ANIM_FILE_NAME[] =
-{
-		L"Dancing.anim"
-	,
-};
-
-/*
-=============
-Animator
-=============
-*/
-
-UAnimator::UAnimator()
-{
-}
-
-UAnimator::~UAnimator()
-{
-	CleanUp();
-}
-
-AkBool UAnimator::Initialize(UApplication* pApp)
-{
-	_pApp = pApp;
-
-	return AK_TRUE;
-}
-
-void UAnimator::AddAnimation(GAME_ANIMATION_TYPE eType, const wchar_t* wcBasePath, const wchar_t** wcFilenames, AkU32 uFileNum, AnimatorHandle_t* pAnimHandle)
-{
-	UAnimation* pAnim = AllocAnimation(pAnimHandle);
-
-	AnimationClip_t* pAnimClip = nullptr;
-
-	for (AkU32 i = 0; i < uFileNum; i++)
-	{
-		pAnimClip = pAnim->ReadFromAnimationFile(_pApp, wcBasePath, wcFilenames[i]);
-	}
-
-	_ppAnimList[(AkU32)eType] = pAnim;
-}
-
-void UAnimator::CleanUp()
-{
-	if (_ppAnimList[(AkU32)GAME_ANIMATION_TYPE::GAME_ANIM_TYPE_PLAYER])
-	{
-		for (AkU32 i = 0; i < _countof(GAME_ANIM_PLAYER_ANIM_FILE_NAME); i++)
-		{
-			_ppAnimList[(AkU32)GAME_ANIMATION_TYPE::GAME_ANIM_TYPE_PLAYER]->DestroyAnimationClip(GAME_ANIM_PLAYER_ANIM_FILE_NAME[i]);
-		}
-	}
-
-	if (_ppAnimList[(AkU32)GAME_ANIMATION_TYPE::GAME_ANIM_TYPE_DANCER])
-	{
-		for (AkU32 i = 0; i < _countof(GAME_ANIM_DANCER_ANIM_FILE_NAME); i++)
-		{
-			_ppAnimList[(AkU32)GAME_ANIMATION_TYPE::GAME_ANIM_TYPE_PLAYER]->DestroyAnimationClip(GAME_ANIM_DANCER_ANIM_FILE_NAME[i]);
-		}
-	}
-
-	for (AkU32 i = 0; i < (AkU32)GAME_ANIMATION_TYPE::GAME_ANIM_TYPE_COUNT; i++)
-	{
-		if (_ppAnimList[i])
-		{
-			FreeAnimation(_ppAnimList[i]);
-			_ppAnimList[i] = nullptr;
-		}
-	}
-}
-
-UAnimation* UAnimator::AllocAnimation(AnimatorHandle_t* pAnimHandle)
-{
-	UAnimation* pAnim = new UAnimation;
-	pAnim->Initialize(MAX_ANIM_CLIP_COUNT);
-	pAnim->SetBoneOffsetMat(pAnimHandle->pBoneOffsetMatList);
-	pAnim->SetBoneHierarchy(pAnimHandle->pBoneHierarchyList);
-	pAnim->SetBoneNum(pAnimHandle->uBoneNum);
-	pAnim->SetDefaultMatrix(&pAnimHandle->mDefaultMat);
-
-	return pAnim;
-}
-
-void UAnimator::FreeAnimation(UAnimation* pAnim)
-{
-	if (pAnim)
-	{
-		pAnim->Release();
-		pAnim = nullptr;
 	}
 }

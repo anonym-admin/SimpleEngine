@@ -18,15 +18,13 @@ UPanelUI::~UPanelUI()
 	CleanUp();
 }
 
-AkBool UPanelUI::Initialize(UApplication* pApp, const wchar_t* wcTexFileName, AkU32 uPosX, AkU32 uPosY, AkU32 uTexWidth, AkU32 uTexHeight)
+AkBool UPanelUI::Initialize(const wchar_t* wcTexFileName, AkU32 uPosX, AkU32 uPosY, AkU32 uTexWidth, AkU32 uTexHeight)
 {
-	if (!UUI::Initialize(pApp))
+	if (!UUI::Initialize())
 	{
 		__debugbreak();
 		return AK_FALSE;
 	}
-
-	_pRenderer = pApp->GetRenderer();
 
 	_pTexSpriteObj = _pRenderer->CreateSpriteObjectWidthTex(wcTexFileName, (AkI32)uPosX, (AkI32)uPosY, (AkI32)uTexWidth, (AkI32)uTexHeight);
 

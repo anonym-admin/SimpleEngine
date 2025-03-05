@@ -1,96 +1,78 @@
 #pragma once
 
 /*
-===========
-Scene Type
-===========
+=====================================
+Asset Handle => using Asset Manager
+=====================================
 */
-
-enum class GAME_SCENE_TYPE
+struct AssetMeshDataContainer_t
 {
-	SCENE_TYPE_LOADING,
-	SCENE_TYPE_INGANE,
-	SCENE_TYPE_COUNT,
+	MeshData_t* pMeshData = nullptr;
+	AkU32 uMeshDataNum = 0;
+	Matrix mDefaultMat = Matrix();
+	const Matrix* pBoneOffsetMatList = nullptr;
+	const AkI32* pBoneHierarchyList = nullptr;
+	AkU32 uBoneNum = 0;
 };
 
-/*
-=======================
-Game Object Type
-=======================
-*/
-
-enum class GAME_OBJECT_GROUP_TYPE
+struct AssetTextureContainer_t
 {
-	GAME_OBJ_GROUP_TYPE_PLAYER,
-	GAME_OBJ_GROUP_TYPE_DANCER,
-	GAME_OBJ_GROUP_TYPE_WEAPON,
-	GAME_OBJ_GROUP_TYPE_MAP, // 움직이지 않는 오브젝트
-	GAME_OBJ_GROUP_TYPE_COUNT = 32,
-};
-
-/*
-======================
-UI Object Type
-======================
-*/
-
-enum class UI_OBJECT_TYPE
-{
-	UI_OBJ_SYS_INFO_TEXT,
-	UI_OBJ_CHAT_INPUT_TEXT,
-	UI_OBJ_TEST_STATIC_TEXT,
-	UI_OBJ_EXIT,
-	UI_OBJ_TYPE_COUNT = 32,
-};
-
-/*
-============
-Editor Type
-============
-*/
-
-enum class EDITOR_TYPE
-{
-	EDITOR_TYPE_CHARACTER,
-	EDITOR_TYPE_MAP,
-	EDITOR_TYPE_COUNT,
-};
-
-/*
-================
-Collider Type
-================
-*/
-
-enum class GAME_COLLIDER_TYPE
-{
-	GAME_COLLIDER_TYPE_SPHERE,
-	GAME_COLLIDER_TYPE_BOX,
-	GAME_COLLIDER_TYPE_PLANE,
-	GAME_COLLIDER_TYPE_TRI_LIST,
-	GAME_COLLIDER_TYPE_SPHERE_GROUP,
-};
-
-/*
-================
-Game Event Type
-================
-*/
-
-enum class GAME_EVENT_TYPE
-{
-	GAME_EVENT_TYPE_CREATE_GAME_OBJECT,
-	GAME_EVENT_TYPE_SCENE_CHANGE,
+	void* pTexHandle = nullptr;
 };
 
 /*
 ==================
-Editor Event Type
+Animator Handle
 ==================
 */
 
-enum class EDITOR_EVENT_TYPE
+struct AnimatorHandle_t
 {
-	EDITOR_EVENT_TYPE_CREATE_GAME_OBJECT,
-	EDITOR_EVENT_TYPE_EDITOR_CHANGE,
+	Matrix mDefaultMat = Matrix();
+	const Matrix* pBoneOffsetMatList = nullptr;
+	const AkI32* pBoneHierarchyList = nullptr;
+	AkU32 uBoneNum = 0;
+};
+
+/*
+==============================
+Event Handler Type
+==============================
+*/
+
+struct EventCreateGameObjectParam_t
+{
+
+};
+
+struct EventSceneChangeParam_t
+{
+	SCENE_TYPE eBefore;
+	SCENE_TYPE eAfter;
+};
+
+struct EventEditorChangeParam_t
+{
+	EDITOR_TYPE eBefore;
+	EDITOR_TYPE eAfter;
+};
+
+struct EventChangeSceneEditorParam_t
+{
+	SCENE_TYPE eScene;
+	EDITOR_TYPE eEditor;
+};
+
+struct EventHandle_t
+{
+	EVENT_TYPE eEventType = {};
+	void* pObj = nullptr;
+
+	union
+	{
+		EventCreateGameObjectParam_t tCreateGameObjParam;
+		EventSceneChangeParam_t tSceneChangeParam;
+		EventEditorChangeParam_t tEditorChangeParam;
+		EventChangeSceneEditorParam_t tSceneEditorChangeParam;
+	};
 };

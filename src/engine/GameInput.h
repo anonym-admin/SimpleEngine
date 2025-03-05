@@ -164,15 +164,15 @@ Game Input (keyboard, mouse)
 ============================
 */
 
-class UApplication;
+class Application;
 
-class UGameInput
+class GameInput
 {
 public:
-	UGameInput();
-	~UGameInput();
+	GameInput();
+	~GameInput();
 
-	AkBool Initialize(UApplication* pApp);
+	AkBool Initialize();
 	void Update();
 	bool LeftBtnDown();
 	bool RightBtnDown();
@@ -186,8 +186,8 @@ public:
 
 	AkI32 GetMouseX() { return _tMousePos.x; }
 	AkI32 GetMouseY() { return _tMousePos.y; }
-	AkI32 GetReleasedMouseX() { return _iReleasedMousePosX; }
-	AkI32 GetReleasedMouseY() { return _iReleasedMousePosY; }
+	AkI32 GetAccumulatedMouseX() { return _iReleasedMousePosX; }
+	AkI32 GetAccumulatedMouseY() { return _iReleasedMousePosY; }
 
 private:
 	void CleanUp();
@@ -195,7 +195,6 @@ private:
 	void AcquireMouseDevice();
 
 private:
-	HWND _hWnd = nullptr;
 	IDirectInput8* _pDirectInput = nullptr;
 	IDirectInputDevice8* _pKeyboardDevice = nullptr;
 	IDirectInputDevice8* _pMouseDevice = nullptr;

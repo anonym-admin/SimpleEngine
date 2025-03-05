@@ -7,16 +7,17 @@ Sound Manager
 ===================
 */
 
-USoundManager::USoundManager()
+SoundManager::SoundManager()
 {
+	Initialize();
 }
 
-USoundManager::~USoundManager()
+SoundManager::~SoundManager()
 {
 	CleanUp();
 }
 
-AkBool USoundManager::Initialize()
+AkBool SoundManager::Initialize()
 {
 	FMOD_RESULT tRet;
 
@@ -35,16 +36,16 @@ AkBool USoundManager::Initialize()
 	return AK_TRUE;
 }
 
-void USoundManager::Update(const AkF32 fDeltaTime)
+void SoundManager::Update()
 {
 	_pSystem->update();
 }
 
-void USoundManager::Render()
+void SoundManager::Render()
 {
 }
 
-USound* USoundManager::LoadSound(const char* pFilename)
+USound* SoundManager::LoadSound(const char* pFilename)
 {
 	FMOD_RESULT tRet;
 
@@ -72,7 +73,7 @@ USound* USoundManager::LoadSound(const char* pFilename)
 	return pSound;
 }
 
-void USoundManager::CleanUp()
+void SoundManager::CleanUp()
 {
 	if (_pSound)
 	{
@@ -109,7 +110,7 @@ AkBool USound::Initialize(FMOD::System* pSys)
 	return AK_TRUE;
 }
 
-void USound::Update(const AkF32 fDeltaTime)
+void USound::Update()
 {
 }
 

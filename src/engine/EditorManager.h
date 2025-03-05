@@ -1,31 +1,33 @@
 #pragma once
 
-class UApplication;
-class UEditor;
+class Editor;
 
-class UEditorManager
+class EditorManager
 {
 public:
-	UEditorManager();
-	~UEditorManager();
+	EditorManager();
+	~EditorManager();
 
-	AkBool Initialize(UApplication* pApp);
-	void Update(const AkF32 fDeltaTime);
+	void Update();
+	void FinalUpdate();
 	void Render();
+	void RenderShadow();
 
 	void ChangeEditor(EDITOR_TYPE eEditorType);
-	UEditor* GetCurrentEditor() { return _pCurEditor; }
-	UEditor* GetEditor(EDITOR_TYPE eEditorType) { return _pEditorList[(AkU32)eEditorType]; }
+	Editor* GetCurrentEditor() { return _pCurEditor; }
+	EDITOR_TYPE GetCurrentEditorType() { return _eType; }
+	Editor* GetEditor(EDITOR_TYPE eType) { return _pEditorList[(AkU32)eType]; }
+	Editor* AddEditor(EDITOR_TYPE eType, Editor* pEditor);
+	Editor* BindCurrnetEditor(EDITOR_TYPE eType);
+	void UnBindCurrentEditor();
 
 private:
 	void CleanUp();
 
-	UEditor* CreateEditor(EDITOR_TYPE eEditorType);
-
 private:
-	UApplication* _pApp = nullptr;
-	UEditor* _pEditorList[(AkU32)EDITOR_TYPE::EDITOR_TYPE_COUNT] = {};
-	UEditor* _pCurEditor = nullptr;
+	Editor* _pEditorList[(AkU32)EDITOR_TYPE::EDITOR_TYPE_COUNT] = {};
+	Editor* _pCurEditor = nullptr;
+	EDITOR_TYPE _eType = {};
 	AkU32 _uEditorNum = 0;
 };
 
