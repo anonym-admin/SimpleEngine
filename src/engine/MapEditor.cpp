@@ -41,3 +41,11 @@ void MapEditor::RenderShadow()
 {
 
 }
+
+void MapEditor::Load()
+{
+}
+
+void MapEditor::Save()
+{
+}

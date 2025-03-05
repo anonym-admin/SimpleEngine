@@ -15,6 +15,10 @@ public:
 
 	void SetName(const wchar_t* wcName) { Name = wcName; }
 
+protected:
+	virtual void Load() = 0;
+	virtual void Save() = 0;
+
 public:
 	const wchar_t* Name;
 };

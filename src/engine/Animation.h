@@ -64,6 +64,9 @@ public:
 	void Release();
 
 	void GetFinalTransform(const wchar_t* wcClipName, const AkF32 fTimePos, Matrix* pFinalTransform, Matrix* pRootTransform, AkBool bInPlace);
+	void GetFinalTransform(const wchar_t* wcCurClipName, const wchar_t* wcNextClipName, const AkF32 fAccTime, const AkF32 fBlendingStartTime, Matrix* pFinalTransform, Matrix* pRootTransform, AkBool bInPlace);
+	void GetFinalTransform(const wchar_t* wcClipName, AkU32 uFrame, Matrix* pFinalTransform);
+
 	AkU32 GetClipTickPerSecond(const wchar_t* wcClipName);
 	AkU32 GetClipDuration(const wchar_t* wcClipName);
 	AkF32 GetClipStartTime(const wchar_t* wcClipName);
@@ -83,6 +86,8 @@ public:
 	AnimationClip_t* ReadFromAnimationFile(const wchar_t* wcBasePath, const wchar_t* wcFilename);
 
 	AkBool PlayAnimation(const wchar_t* wcAnimClipname, AkBool bInPlace);
+	AkBool PlayAnimationBlending(const wchar_t* wcCurClipName, const wchar_t* wcNextClipName);
+	AkBool PlayAnimationWithFrame(const wchar_t* wcClipName, AkU32 uFrame);
 
 private:
 	void CleanUp();

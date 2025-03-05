@@ -43,6 +43,7 @@ AkBool UInGameScene::BeginScene()
 	Swat* pSwat = new Swat;
 	pSwat->SetRotation(&vRot);
 	pSwat->tLink.pData = pSwat;
+	pSwat->Name = L"Swat";
 	AddGameObject(GAME_OBJECT_GROUP_TYPE::GAME_OBJ_GROUP_TYPE_PLAYER, pSwat);
 
 	_pSkybox = GRenderer->CreateSkyboxObject();

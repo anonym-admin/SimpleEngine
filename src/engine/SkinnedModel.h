@@ -14,6 +14,7 @@ public:
 	virtual void RenderNormal();
 	virtual void RenderShadow();
 	void BindAnimation(Animation* pAnim) { _pAnim = pAnim; }
+	Animation* GetAnimation() { return _pAnim; }
 	AkBool PlayAnimation(const wchar_t* wcClipName, AkBool bInPlace);
 
 private:

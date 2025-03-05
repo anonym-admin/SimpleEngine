@@ -84,11 +84,6 @@ AkBool Application::InitApplication(AkBool bEnableDebugLayer, AkBool bEnableGBV)
 	GRenderer = pRenderer;
 	GRenderer->BindImGui((void**)&GImGui);
 
-	RECT tRect = {};
-	::GetClientRect(GhWnd, &tRect);
-	_uScreenWidth = tRect.right - tRect.left;
-	_uScreenHeight = tRect.bottom - tRect.top;
-
 	//////////////////////////////////////////////////////////
 
 	//_pSysTextUI = new UTextUI;
@@ -248,8 +243,6 @@ AkBool Application::UpdateWindowSize(AkU32 uScreenWidth, AkU32 uScreenHeight)
 	if (GRenderer)
 	{
 		bResult = GRenderer->UpdateWindowSize(uScreenWidth, uScreenHeight);
-		_uScreenWidth = uScreenWidth;
-		_uScreenHeight = uScreenHeight;
 	}
 
 	return bResult;
@@ -311,10 +304,7 @@ void Application::Update()
 	//}
 
 	// Update game input.
-	GGameInput->Update();
-
-	// Update mouse ndc pos.
-	UpdateMouseNdcPos();
+	GGameInput->Update();;
 
 	// Update env.
 	UpdateEnv();
@@ -405,29 +395,27 @@ void Application::UpdateEnv()
 	}
 }
 
-void Application::UpdateMouseNdcPos()
-{
-	// AkI32 iMousePosX = _pGameInput->GetMouseX();
-	AkI32 iMousePosX = GGameInput->GetAccumulatedMouseX();
-	AkI32 iMousePosY = GGameInput->GetMouseY();
-
-	_fNdcX = (AkF32)iMousePosX / _uScreenWidth * 2.0f - 1.0f;
-	_fNdcY = (AkF32)iMousePosY / _uScreenHeight * -2.0f + 1.0f;
-
-	_fClampNdcX = Clamp(_fNdcX, -1.0f, 1.0f);
-	_fClampNdcY = Clamp(_fNdcY, -1.0f, 1.0f);
-}
+//void Application::UpdateMouseNdcPos()
+//{
+//	// AkI32 iMousePosX = _pGameInput->GetMouseX();
+//	AkI32 iMousePosX = GGameInput->GetAccumulatedMouseX();
+//	AkI32 iMousePosY = GGameInput->GetMouseY();
+//
+//	_fNdcX = (AkF32)iMousePosX / _uScreenWidth * 2.0f - 1.0f;
+//	_fNdcY = (AkF32)iMousePosY / _uScreenHeight * -2.0f + 1.0f;
+//
+//	_fClampNdcX = Clamp(_fNdcX, -1.0f, 1.0f);
+//	_fClampNdcY = Clamp(_fNdcY, -1.0f, 1.0f);
+//}
 
 void Application::UpdateText()
 {
-	UInGameScene* pSceneInGame = (UInGameScene*)GSceneManager->GetScene(SCENE_TYPE::SCENE_TYPE_INGANE);
-
 	AkI32 iTextWidth = 0;
 	AkI32 iTextHeight = 0;
 	wchar_t wcText[128] = {};
 	AkU32 uTxtLen = swprintf_s(wcText, L"fps:%.2lf\n", _fFps);
 
-	if (!wcscmp(_wcText, wcText))
+	if (wcscmp(_wcText, wcText))
 	{
 		GRenderer->WriteTextToBitmap(_pTextTextureImage, _uTextTextureWidth, _uTextTextureHeight, _uTextTextureWidth * 4, &iTextWidth, &iTextHeight, GCommonFont, _wcText, uTxtLen);
 		GRenderer->UpdateTextureWidthImage(_pSysTextureHandle, _pTextTextureImage, _uTextTextureWidth, _uTextTextureHeight);
@@ -439,6 +427,12 @@ void Application::Render()
 {
 	// Render Scene list.
 	GSceneManager->Render();
+
+	// Render editor list.
+	GEditorManager->Render();
+
+	// Render System info text.
+	RenderText();
 
 	// Render UI
 	GUIManager->Render();

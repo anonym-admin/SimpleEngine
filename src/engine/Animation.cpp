@@ -258,6 +258,230 @@ void Animation::GetFinalTransform(const wchar_t* wcClipName, const AkF32 fTimePo
 	pToParentTransform = nullptr;
 }
 
+void Animation::GetFinalTransform(const wchar_t* wcCurClipName, const wchar_t* wcNextClipName, const AkF32 fAccTime, const AkF32 fBlendingStartTime, Matrix* pFinalTransform, Matrix* pRootTransform, AkBool bInPlace)
+{
+	Matrix* pToParentTransform = new Matrix[96];
+
+	AnimationClip_t* pCurClip = nullptr;
+	AkU32 uKeySize = (AkU32)wcslen(wcCurClipName) * sizeof(wchar_t);
+	if (!HT_Find(_pAnimationClipTable, (void**)&pCurClip, 1, wcCurClipName, uKeySize))
+	{
+		__debugbreak();
+	}
+
+	AnimationClip_t* pNextClip = nullptr;
+	uKeySize = (AkU32)wcslen(wcNextClipName) * sizeof(wchar_t);
+	if (!HT_Find(_pAnimationClipTable, (void**)&pNextClip, 1, wcNextClipName, uKeySize))
+	{
+		__debugbreak();
+	}
+
+	if (pCurClip->uNumBoneAnimation != pNextClip->uNumBoneAnimation)
+	{
+		__debugbreak();
+	}
+
+	for (AkU32 i = 0; i < pCurClip->uNumBoneAnimation; i++)
+	{
+		if (!pCurClip->pBoneAnimationList[i].uNumKeyFrame)
+		{
+			continue;
+		}
+
+		AkBool bCalc0 = AK_FALSE;
+		AkBool bCalc1 = AK_FALSE;
+
+		AkU32 uFront = 0;
+		AkU32 uBack = pCurClip->pBoneAnimationList[i].uNumKeyFrame - 1;
+
+		Vector3 vScale0;
+		Vector3 vScale1;
+		Vector3 vPos0;
+		Vector3 vPos1;
+		Quaternion qRot0;
+		Quaternion qRot1;
+
+		if (fAccTime <= pCurClip->pBoneAnimationList[i].pKeyFrameList[uFront].fTimePos)
+		{
+			Vector3 vScale = pCurClip->pBoneAnimationList[i].pKeyFrameList[uFront].vScale;
+			Quaternion qRot = pCurClip->pBoneAnimationList[i].pKeyFrameList[uFront].qRot;
+			Vector3 vPos = pCurClip->pBoneAnimationList[i].pKeyFrameList[uFront].vPos;
+
+			pToParentTransform[i] = Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(qRot) * Matrix::CreateTranslation(vPos);
+		}
+		else if (fAccTime >= pCurClip->pBoneAnimationList[i].pKeyFrameList[uBack].fTimePos)
+		{
+			Vector3 vScale = pCurClip->pBoneAnimationList[i].pKeyFrameList[uBack].vScale;
+			Quaternion qRot = pCurClip->pBoneAnimationList[i].pKeyFrameList[uBack].qRot;
+			Vector3 vPos = pCurClip->pBoneAnimationList[i].pKeyFrameList[uBack].vPos;
+
+			pToParentTransform[i] = Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(qRot) * Matrix::CreateTranslation(vPos);
+		}
+		else
+		{
+			// Cur
+			for (AkI32 j = 0; j < (AkI32)pCurClip->pBoneAnimationList[i].uNumKeyFrame - 1; j++)
+			{
+				if (pCurClip->pBoneAnimationList[i].pKeyFrameList[j].fTimePos <= fAccTime && fAccTime <= pCurClip->pBoneAnimationList[i].pKeyFrameList[j + 1].fTimePos)
+				{
+					vScale0 = pCurClip->pBoneAnimationList[i].pKeyFrameList[j].vScale;
+					vPos0 = pCurClip->pBoneAnimationList[i].pKeyFrameList[j].vPos;
+					qRot0 = pCurClip->pBoneAnimationList[i].pKeyFrameList[j].qRot;
+					bCalc0 = AK_TRUE;
+				}
+			}
+		}
+
+		uFront = 0;
+		uBack = pNextClip->pBoneAnimationList[i].uNumKeyFrame - 1;
+
+		if (fBlendingStartTime <= pNextClip->pBoneAnimationList[i].pKeyFrameList[uFront].fTimePos)
+		{
+			Vector3 vScale = pNextClip->pBoneAnimationList[i].pKeyFrameList[uFront].vScale;
+			Quaternion qRot = pNextClip->pBoneAnimationList[i].pKeyFrameList[uFront].qRot;
+			Vector3 vPos = pNextClip->pBoneAnimationList[i].pKeyFrameList[uFront].vPos;
+
+			pToParentTransform[i] = Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(qRot) * Matrix::CreateTranslation(vPos);
+		}
+		else if (fBlendingStartTime >= pNextClip->pBoneAnimationList[i].pKeyFrameList[uBack].fTimePos)
+		{
+			Vector3 vScale = pNextClip->pBoneAnimationList[i].pKeyFrameList[uBack].vScale;
+			Quaternion qRot = pNextClip->pBoneAnimationList[i].pKeyFrameList[uBack].qRot;
+			Vector3 vPos = pNextClip->pBoneAnimationList[i].pKeyFrameList[uBack].vPos;
+
+			pToParentTransform[i] = Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(qRot) * Matrix::CreateTranslation(vPos);
+		}
+		else
+		{
+			// Next
+			for (AkI32 j = 0; j < (AkI32)pNextClip->pBoneAnimationList[i].uNumKeyFrame - 1; j++)
+			{
+				if (pNextClip->pBoneAnimationList[i].pKeyFrameList[j].fTimePos <= fBlendingStartTime && fBlendingStartTime <= pNextClip->pBoneAnimationList[i].pKeyFrameList[j + 1].fTimePos)
+				{
+					vScale1 = pNextClip->pBoneAnimationList[i].pKeyFrameList[j].vScale;
+					vPos1 = pNextClip->pBoneAnimationList[i].pKeyFrameList[j].vPos;
+					qRot1 = pNextClip->pBoneAnimationList[i].pKeyFrameList[j].qRot;
+					bCalc1 = AK_TRUE;
+				}
+			}
+		}
+
+		if (bCalc0 && bCalc1)
+		{
+			printf("%lf\n", fBlendingStartTime);
+			printf("%lf\n", pCurClip->pBoneAnimationList[i].pKeyFrameList[uBack].fTimePos);
+
+
+			const AkF32 fLerpRatio = fBlendingStartTime / (pCurClip->pBoneAnimationList[i].pKeyFrameList[uBack].fTimePos - fAccTime);
+
+			Vector3 vScale = DirectX::XMVectorLerp(vScale0, vScale1, fLerpRatio);
+			Vector3 vPos = DirectX::XMVectorLerp(vPos0, vPos1, fLerpRatio);
+			Quaternion qRot = DirectX::XMQuaternionSlerp(qRot0, qRot1, fLerpRatio);
+
+			pToParentTransform[i] = Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(qRot) * Matrix::CreateTranslation(vPos);
+		}
+	}
+
+
+
+	///////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+	Matrix* pToRootTransform = new Matrix[_uBoneNum];
+
+	pToRootTransform[0] = pToParentTransform[0];
+
+	if (bInPlace)
+	{
+		// 제자리 애니메이션 적용.
+		Vector3 vTranslation = pToRootTransform[0].Translation();
+
+		// For Jump.
+		AkF32 fY = vTranslation.y * 0.85f;
+
+		// Init root transform.
+		pToRootTransform[0].Translation(Vector3(0.0f, fY, 0.0f));
+	}
+
+	for (AkU32 i = 1; i < _uBoneNum; i++)
+	{
+		AkI32 iParentIndex = _pBoneHierarchyList[i];
+
+		pToRootTransform[i] = pToParentTransform[i] * pToRootTransform[iParentIndex];
+	}
+
+	for (AkU32 i = 0; i < _uBoneNum; i++)
+	{
+		// WARNING!!
+		// default matrix
+		pRootTransform[i] = _pBoneOffsetMatrixList[i] * pToRootTransform[i];
+
+		pFinalTransform[i] = _mDefaultMatrix.Invert() * _pBoneOffsetMatrixList[i] * pToRootTransform[i] * _mDefaultMatrix;
+		pFinalTransform[i] = pFinalTransform[i].Transpose();
+	}
+
+	delete[] pToRootTransform;
+	pToRootTransform = nullptr;
+
+	delete[] pToParentTransform;
+	pToParentTransform = nullptr;
+}
+
+void Animation::GetFinalTransform(const wchar_t* wcClipName, AkU32 uFrame, Matrix* pFinalTransform)
+{
+	Matrix* pToParentTransform = new Matrix[96];
+
+	AnimationClip_t* pCurClip = nullptr;
+	AkU32 uKeySize = (AkU32)wcslen(wcClipName) * sizeof(wchar_t);
+	if (!HT_Find(_pAnimationClipTable, (void**)&pCurClip, 1, wcClipName, uKeySize))
+	{
+		__debugbreak();
+	}
+
+	for (AkU32 i = 0; i < pCurClip->uNumBoneAnimation; i++)
+	{
+		if (!pCurClip->pBoneAnimationList[i].uNumKeyFrame)
+		{
+			pToParentTransform[i] = Matrix();
+			continue;
+		}
+
+		uFrame %= pCurClip->pBoneAnimationList[i].uNumKeyFrame;
+
+		Vector3 vScale = pCurClip->pBoneAnimationList[i].pKeyFrameList[uFrame].vScale;
+		Vector3 vPos = pCurClip->pBoneAnimationList[i].pKeyFrameList[uFrame].vPos;
+		Quaternion qRot = pCurClip->pBoneAnimationList[i].pKeyFrameList[uFrame].qRot;
+
+		pToParentTransform[i] = Matrix::CreateScale(vScale) * Matrix::CreateFromQuaternion(qRot) * Matrix::CreateTranslation(vPos);
+	}
+
+	Matrix* pToRootTransform = new Matrix[_uBoneNum];
+
+	pToRootTransform[0] = pToParentTransform[0];
+
+	for (AkU32 i = 1; i < _uBoneNum; i++)
+	{
+		AkI32 iParentIndex = _pBoneHierarchyList[i];
+
+		pToRootTransform[i] = pToParentTransform[i] * pToRootTransform[iParentIndex];
+	}
+
+	for (AkU32 i = 0; i < _uBoneNum; i++)
+	{
+		pFinalTransform[i] = _mDefaultMatrix.Invert() * _pBoneOffsetMatrixList[i] * pToRootTransform[i] * _mDefaultMatrix;
+		pFinalTransform[i] = pFinalTransform[i].Transpose();
+	}
+
+	delete[] pToRootTransform;
+	pToRootTransform = nullptr;
+
+	delete[] pToParentTransform;
+	pToParentTransform = nullptr;
+}
+
 AkU32 Animation::GetClipTickPerSecond(const wchar_t* wcClipName)
 {
 	AnimationClip_t* pAnimationClip = nullptr;
@@ -389,6 +613,95 @@ AkBool Animation::PlayAnimation(const wchar_t* wcAnimClipname, AkBool bInPlace)
 	SetClipCurrentTime(wcAnimClipname, fAnimTime);
 
 	return bIsEnd;
+}
+
+AkBool Animation::PlayAnimationBlending(const wchar_t* wcCurClipName, const wchar_t* wcNextClipName)
+{
+	AkBool bIsBlending = AK_FALSE;
+	AkBool bIsCurEnd = AK_FALSE;
+
+	// Cur
+	AkU32 uCurTickPerSecond = GetClipTickPerSecond(wcCurClipName);
+	AkU32 uCurDuration = GetClipDuration(wcCurClipName);
+
+	AkF32 fCurAnimTime = GetClipCurrentTime(wcCurClipName);
+	fCurAnimTime += (AkF32)uCurTickPerSecond * DT;
+
+	AkF32 fCurEndTiem = GetClipEndTime(wcCurClipName);
+	AkF32 fNextEndTiem = GetClipEndTime(wcNextClipName);
+
+	if (fCurAnimTime >= fCurEndTiem - 10.0f) // Blending Start Time 이상이 되면
+	{
+		bIsBlending = AK_TRUE;
+	}
+
+	if (fCurAnimTime >= GetClipEndTime(wcCurClipName))
+	{
+		bIsBlending = AK_FALSE;
+		bIsCurEnd = AK_TRUE;
+	}
+
+	if (!bIsBlending)
+	{
+		GetFinalTransform(wcCurClipName, fCurAnimTime, _pFinalTransforms, _pRootTransforms, AK_FALSE);
+		SetClipCurrentTime(wcCurClipName, fCurAnimTime);
+	}
+
+	SetClipCurrentTime(wcCurClipName, fCurAnimTime);
+
+	// Next
+	AkBool bIsNextEnd = AK_FALSE;
+	if (bIsBlending)
+	{
+		AkU32 uNextTickPerSecond = GetClipTickPerSecond(wcNextClipName);
+		AkU32 uNextDuration = GetClipDuration(wcNextClipName);
+
+		AkF32 fNextAnimTime = GetClipCurrentTime(wcNextClipName);
+		fNextAnimTime += (AkF32)uNextTickPerSecond * DT;
+
+		if (fNextAnimTime >= GetClipEndTime(wcNextClipName))
+		{
+			__debugbreak();
+		}
+
+		GetFinalTransform(wcCurClipName, wcNextClipName, fCurAnimTime, fNextAnimTime, _pFinalTransforms, _pRootTransforms, AK_FALSE);
+		SetClipCurrentTime(wcNextClipName, fNextAnimTime);
+	}
+	else
+	{
+		if (bIsCurEnd)
+		{
+			AkU32 uNextTickPerSecond = GetClipTickPerSecond(wcNextClipName);
+			AkU32 uNextDuration = GetClipDuration(wcNextClipName);
+
+			AkF32 fNextAnimTime = GetClipCurrentTime(wcNextClipName);
+			fNextAnimTime += (AkF32)uNextTickPerSecond * DT;
+
+			if (fNextAnimTime >= GetClipEndTime(wcNextClipName))
+			{
+				fCurAnimTime = 0.0f;
+				fNextAnimTime = 0.0f;
+				bIsNextEnd = AK_TRUE;
+			}
+
+			GetFinalTransform(wcNextClipName, fNextAnimTime, _pFinalTransforms, _pRootTransforms, AK_FALSE);
+			SetClipCurrentTime(wcNextClipName, fNextAnimTime);
+		}
+	}
+
+	if (bIsNextEnd)
+	{
+		SetClipCurrentTime(wcCurClipName, fCurAnimTime);
+	}
+
+	return bIsNextEnd;
+}
+
+AkBool Animation::PlayAnimationWithFrame(const wchar_t* wcClipName, AkU32 uFrame)
+{
+	GetFinalTransform(wcClipName, uFrame, _pFinalTransforms);
+
+	return AK_TRUE;
 }
 
 void Animation::SetClipCurrentTime(const wchar_t* wcClipName, AkF32 fCurTime)

@@ -33,8 +33,6 @@ public:
 	AkBool EnableEditor() { return _bEnableEditor; }
 	AkF32 GetClampNdcX() { return _fClampNdcX; }
 	AkF32 GetClampNdcY() { return _fClampNdcY; }
-	AkU32 GetScreenWidth() { return _uScreenWidth; }
-	AkU32 GetScreenHeight() { return _uScreenHeight; }
 	void SetVSync(AkBool bUseVSync);
 
 private:
@@ -45,7 +43,7 @@ private:
 
 	void Update();
 	void UpdateEnv();
-	void UpdateMouseNdcPos();
+	// void UpdateMouseNdcPos();
 	void UpdateText();
 	void Render();
 	void RenderText();
@@ -55,8 +53,6 @@ private:
 private:
 	HMODULE _hRendererDLL = nullptr;
 	AkF32 _fFps = 0.0f;
-	AkU32 _uScreenWidth = 0;
-	AkU32 _uScreenHeight = 0;
 	AkF32 _fClampNdcX = 0.0f;
 	AkF32 _fClampNdcY = 0.0f;
 	AkU32 _uEditorType = 0;
